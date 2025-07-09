@@ -27,11 +27,11 @@ export function ArtifactHeader(props: ArtifactHeaderProps) {
           <TooltipIconButton
             tooltip="Expand Chat"
             variant="ghost"
-            className="ml-2 mb-1 w-8 h-8"
+            className="ml-2 mb-1 w-8 h-8 hover:bg-transparent"
             delayDuration={400}
             onClick={() => props.setChatCollapsed(false)}
           >
-            <PanelRightClose className="text-gray-600" />
+            <PanelRightClose className="text-tamar-gray hover:text-tamar-violet transition-colors duration-200" />
           </TooltipIconButton>
         )}
         <ArtifactTitle

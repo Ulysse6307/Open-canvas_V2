@@ -41,7 +41,7 @@ export function ColorPicker(props: ColorPickerProps) {
   return (
     <div className="relative">
       <div
-        className="h-9 w-9 rounded-md cursor-pointer hover:ring-2 ring-offset-2 ring-gray-400 transition-all ease-in-out duration-200"
+        className="h-9 w-9 rounded-md cursor-pointer hover:ring-2 ring-offset-2 ring-tamar-violet transition-all ease-in-out duration-200" // <-- Remplace ring-gray-400 par ring-tamar-violet
         style={{ backgroundColor: iconColor }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={() => {

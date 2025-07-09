@@ -23,10 +23,10 @@ const ThreadScrollToBottom: FC = () => {
     <ThreadPrimitive.ScrollToBottom asChild>
       <TooltipIconButton
         tooltip="Scroll to bottom"
-        variant="outline"
+        variant="ghost"
         className="absolute -top-8 rounded-full disabled:invisible"
       >
-        <ArrowDownIcon />
+        <ArrowDownIcon className="text-tamar-violet hover:text-tamar-violet-dark transition-colors duration-200" />
       </TooltipIconButton>
     </ThreadPrimitive.ScrollToBottom>
   );
@@ -81,9 +81,7 @@ export const Thread: FC<ThreadProps> = (props: ThreadProps) => {
       return;
     }
 
-    // Remove the threadId param from the URL
     setThreadId(null);
-
     setModelName(modelName);
     setModelConfig(modelName, modelConfig);
     clearState();
@@ -91,13 +89,16 @@ export const Thread: FC<ThreadProps> = (props: ThreadProps) => {
   };
 
   return (
-    <ThreadPrimitive.Root className="flex flex-col h-full w-full">
-      <div className="pr-3 pl-6 pt-3 pb-2 flex flex-row gap-4 items-center justify-between">
-        <div className="flex items-center justify-start gap-2 text-gray-600">
+    <ThreadPrimitive.Root className="flex flex-col h-full w-full bg-white">
+      {/* Header premium */}
+      <div className="pr-4 pl-6 pt-4 pb-3 flex flex-row gap-4 items-center justify-between border-b border-tamar-gray/10 bg-white">
+        <div className="flex items-center justify-start gap-3">
           <ThreadHistory
             switchSelectedThreadCallback={switchSelectedThreadCallback}
           />
-          <TighterText className="text-xl">Open Canvas</TighterText>
+          <TighterText className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-tamar-violet to-[#A259FF]">
+            Tamar.ai
+          </TighterText>
           {!hasChatStarted && (
             <ModelSelector
               modelName={modelName}
@@ -113,20 +114,20 @@ export const Thread: FC<ThreadProps> = (props: ThreadProps) => {
             <TooltipIconButton
               tooltip="Collapse Chat"
               variant="ghost"
-              className="w-8 h-8"
+              className="w-8 h-8 hover:bg-transparent"
               delayDuration={400}
               onClick={() => props.setChatCollapsed(true)}
             >
-              <PanelRightOpen className="text-gray-600" />
+              <PanelRightOpen className="text-tamar-gray hover:text-tamar-violet transition-colors duration-200" />
             </TooltipIconButton>
             <TooltipIconButton
               tooltip="New chat"
               variant="ghost"
-              className="w-8 h-8"
+              className="w-8 h-8 hover:bg-transparent"
               delayDuration={400}
               onClick={handleNewSession}
             >
-              <SquarePen className="text-gray-600" />
+              <SquarePen className="text-tamar-gray hover:text-tamar-violet transition-colors duration-200" />
             </TooltipIconButton>
           </div>
         ) : (
@@ -135,7 +136,8 @@ export const Thread: FC<ThreadProps> = (props: ThreadProps) => {
           </div>
         )}
       </div>
-      <ThreadPrimitive.Viewport className="flex-1 overflow-y-auto scroll-smooth bg-inherit px-4 pt-8">
+      {/* Messages area */}
+      <ThreadPrimitive.Viewport className="flex-1 overflow-y-auto scroll-smooth bg-white px-6 pt-8">
         {!hasChatStarted && (
           <ThreadWelcome
             handleQuickStart={handleQuickStart}
@@ -163,7 +165,8 @@ export const Thread: FC<ThreadProps> = (props: ThreadProps) => {
           }}
         />
       </ThreadPrimitive.Viewport>
-      <div className="mt-4 flex w-full flex-col items-center justify-end rounded-t-lg bg-inherit pb-4 px-4">
+      {/* Input area */}
+      <div className="mt-4 flex w-full flex-col items-center justify-end rounded-t-lg bg-white border-t border-tamar-gray/10 pb-4 px-4">
         <ThreadScrollToBottom />
         <div className="w-full max-w-2xl">
           {hasChatStarted && (
@@ -174,6 +177,7 @@ export const Thread: FC<ThreadProps> = (props: ThreadProps) => {
                 modelConfig={modelConfig}
                 setModelConfig={setModelConfig}
                 modelConfigs={modelConfigs}
+                
               />
               <Composer
                 chatStarted={true}
@@ -187,3 +191,5 @@ export const Thread: FC<ThreadProps> = (props: ThreadProps) => {
     </ThreadPrimitive.Root>
   );
 };
+
+export default Thread;

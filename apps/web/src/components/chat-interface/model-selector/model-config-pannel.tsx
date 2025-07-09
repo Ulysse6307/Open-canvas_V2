@@ -7,7 +7,6 @@ import {
   CustomModelConfig,
   ModelConfigurationParams,
 } from "@opencanvas/shared/types";
-
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -83,14 +82,17 @@ export function ModelConfigPanel({
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger onClick={onClick} asChild>
-        <button className="flex-shrink-0 flex size-6 items-center justify-center focus:outline-none focus:ring-0 focus:ring-offset-0">
-          <GearIcon className="size-4" />
+        <button className="flex-shrink-0 flex size-6 items-center justify-center focus:outline-none focus:ring-0 focus:ring-offset-0 group">
+          <GearIcon className="size-4 text-tamar-gray group-hover:text-tamar-violet transition-colors duration-200" />
         </button>
       </PopoverTrigger>
       <PopoverContent
         side="right"
         align="start"
-        className={cn("w-80 p-6 rounded-xl shadow-lg", className)}
+        className={cn(
+          "w-80 p-6 rounded-xl shadow-sm bg-white border border-tamar-gray/10",
+          className
+        )}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="grid gap-4">
@@ -117,8 +119,12 @@ export function ModelConfigPanel({
             }}
             onChange={handleMaxTokensChange}
           />
-          <Button onClick={handleReset} variant="outline" className="mt-2">
-            <ResetIcon className="mr-2 h-4 w-4" />
+          <Button
+            onClick={handleReset}
+            variant="outline"
+            className="mt-2 border-tamar-gray/20 hover:bg-tamar-violet/10 hover:border-tamar-violet/20 text-tamar-gray hover:text-tamar-violet transition-colors duration-200"
+          >
+            <ResetIcon className="mr-2 h-4 w-4 text-tamar-gray hover:text-tamar-violet transition-colors duration-200" />
             Reset to Defaults
           </Button>
         </div>
@@ -145,7 +151,7 @@ const ModelSettingSlider = ({
   <div className="space-y-2">
     <h4
       className={cn(
-        "font-semibold leading-none text-base",
+        "font-semibold leading-none text-base text-tamar-gray",
         disabled && "opacity-50"
       )}
     >
@@ -153,7 +159,10 @@ const ModelSettingSlider = ({
       {disabled && " (disabled)"}
     </h4>
     <p
-      className={cn("text-sm text-muted-foreground", disabled && "opacity-50")}
+      className={cn(
+        "text-sm text-tamar-gray/80",
+        disabled && "opacity-50"
+      )}
     >
       {description}
     </p>
@@ -164,8 +173,15 @@ const ModelSettingSlider = ({
       value={disabled ? [range.min] : [value]}
       onValueChange={onChange}
       disabled={disabled}
+      className={cn(
+        "[&_.slider-track]:bg-tamar-gray/10 [&_.slider-track]:h-1",
+        "[&_.slider-range]:bg-tamar-violet [&_.slider-range]:h-1",
+        "[&_.slider-thumb]:border-tamar-violet [&_.slider-thumb]:bg-white [&_.slider-thumb]:border-2 [&_.slider-thumb]:w-4 [&_.slider-thumb]:h-4",
+        "[&_.slider-thumb]:hover:bg-tamar-violet/10 [&_.slider-thumb]:hover:border-tamar-violet/80",
+        "[&_.slider-thumb]:focus:ring-tamar-violet/20 [&_.slider-thumb]:focus:ring-2 [&_.slider-thumb]:focus:ring-offset-2"
+      )}
     />
-    <div className={cn("text-right text-sm", disabled && "opacity-50")}>
+    <div className={cn("text-right text-sm text-tamar-gray/80", disabled && "opacity-50")}>
       {disabled ? range.min : value}
     </div>
   </div>

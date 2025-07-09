@@ -259,7 +259,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         is_default: true,
         iconData: {
           iconName: "User",
-          iconColor: "#000000",
+          iconColor: "#6B46C1",
         },
         description: "Your default assistant.",
         name: "Default assistant",
@@ -338,7 +338,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
         newAssistant: {
           iconData: {
             iconName: "User",
-            iconColor: "#000000",
+            iconColor: "#6B46C1",
           },
           name: "Default assistant",
           description: "Your default assistant.",
@@ -371,7 +371,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
               "User",
             iconColor:
               (firstAssistant.metadata?.iconColor as string | undefined) ||
-              "#000000",
+              "#6B46C1",
           },
           description:
             (firstAssistant.metadata?.description as string | undefined) ||

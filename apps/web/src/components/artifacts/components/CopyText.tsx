@@ -21,8 +21,8 @@ export function CopyText(props: CopyTextProps) {
     >
       <TooltipIconButton
         tooltip="Copy"
-        variant="outline"
-        className="transition-colors"
+        variant="ghost"
+        className="hover:bg-transparent"
         delayDuration={400}
         onClick={() => {
           try {
@@ -46,7 +46,7 @@ export function CopyText(props: CopyTextProps) {
           }
         }}
       >
-        <Copy className="w-5 h-5 text-gray-600" />
+        <Copy className="w-5 h-5 text-tamar-gray hover:text-tamar-violet transition-colors duration-200" />
       </TooltipIconButton>
     </motion.div>
   );

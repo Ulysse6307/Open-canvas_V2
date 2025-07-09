@@ -55,7 +55,7 @@ const DropdownMenuItemWithDelete = ({
       <DropdownMenuItem
         disabled={disabled}
         onSelect={onClick}
-        className="w-full truncate"
+        className="w-full truncate text-tamar-gray hover:bg-tamar-light/10"
       >
         {title}
       </DropdownMenuItem>
@@ -64,18 +64,18 @@ const DropdownMenuItemWithDelete = ({
         tooltip="Edit action"
         variant="ghost"
         onClick={onEdit}
-        className={cn("ml-1", isHovering ? "visible" : "invisible")}
+        className={cn("ml-1 hover:bg-transparent", isHovering ? "visible" : "invisible")}
       >
-        <Pencil className="text-[#575757] hover:text-black transition-colors ease-in" />
+        <Pencil className="w-4 h-4 text-tamar-gray hover:text-tamar-violet transition-colors duration-200" />
       </TooltipIconButton>
       <TooltipIconButton
         disabled={disabled}
         tooltip="Delete action"
         variant="ghost"
         onClick={onDelete}
-        className={cn(isHovering ? "visible" : "invisible")}
+        className={cn("hover:bg-transparent", isHovering ? "visible" : "invisible")}
       >
-        <Trash2 className="text-[#575757] hover:text-red-500 transition-colors ease-in" />
+        <Trash2 className="w-4 h-4 text-tamar-gray hover:text-red-500 transition-colors duration-200" />
       </TooltipIconButton>
     </div>
   );
@@ -108,7 +108,7 @@ export function CustomQuickActions(props: CustomQuickActionsProps) {
   };
 
   useEffect(() => {
-    if (typeof window === undefined || !assistantId || !user) return;
+    if (typeof window === "undefined" || !assistantId || !user) return;
     getAndSetCustomQuickActions(user.id);
   }, [assistantId, user]);
 
@@ -182,11 +182,11 @@ export function CustomQuickActions(props: CustomQuickActionsProps) {
               ? "Quick actions disabled while text is selected"
               : "Custom quick actions"
           }
-          variant="outline"
+          variant="ghost"
           className={cn(
-            "transition-colors w-[48px] h-[48px] p-0 rounded-xl",
+            "w-[48px] h-[48px] p-0 rounded-full bg-white border border-tamar-gray/10 shadow-sm hover:bg-transparent focus:bg-transparent",
             props.isTextSelected
-              ? "cursor-default opacity-50 text-gray-400 hover:bg-background"
+              ? "cursor-default opacity-50 text-tamar-gray"
               : "cursor-pointer"
           )}
           delayDuration={400}
@@ -195,24 +195,24 @@ export function CustomQuickActions(props: CustomQuickActionsProps) {
             className={cn(
               "w-[26px] h-[26px]",
               props.isTextSelected
-                ? "text-gray-400"
-                : "hover:text-gray-900 transition-colors"
+                ? "text-tamar-gray"
+                : "text-tamar-gray hover:text-tamar-violet transition-colors duration-200"
             )}
           />
         </TooltipIconButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="max-h-[600px] max-w-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+      <DropdownMenuContent className="max-h-[600px] max-w-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 bg-white border border-tamar-gray/10 shadow-sm">
         <DropdownMenuLabel>
-          <TighterText>Custom Quick Actions</TighterText>
+          <TighterText className="text-tamar-blue">Custom Quick Actions</TighterText>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="border-t border-tamar-gray/10" />
         {isLoadingQuickActions && !customQuickActions?.length ? (
-          <span className="text-sm text-gray-600 flex items-center justify-start gap-1 p-2">
+          <span className="text-sm text-tamar-gray flex items-center justify-start gap-1 p-2">
             Loading
-            <LoaderCircle className="w-4 h-4 animate-spin" />
+            <LoaderCircle className="w-4 h-4 animate-spin text-tamar-gray" />
           </span>
         ) : !customQuickActions?.length ? (
-          <TighterText className="text-sm text-gray-600 p-2">
+          <TighterText className="text-sm text-tamar-gray p-2">
             No custom quick actions found.
           </TighterText>
         ) : (
@@ -229,13 +229,13 @@ export function CustomQuickActions(props: CustomQuickActionsProps) {
             ))}
           </div>
         )}
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="border-t border-tamar-gray/10" />
         <DropdownMenuItem
           disabled={props.isTextSelected}
           onSelect={handleNewActionClick}
-          className="flex items-center justify-start gap-1"
+          className="flex items-center justify-start gap-1 text-tamar-gray hover:bg-tamar-light/10"
         >
-          <CirclePlus className="w-4 h-4" />
+          <CirclePlus className="w-4 h-4 text-tamar-gray" />
           <TighterText className="font-medium">New</TighterText>
         </DropdownMenuItem>
       </DropdownMenuContent>

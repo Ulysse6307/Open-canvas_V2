@@ -11,7 +11,7 @@ export async function search(
     client: exaClient,
     searchArgs: {
       filterEmptyResults: true,
-      numResults: 5,
+      numResults: 20,
     },
   });
 

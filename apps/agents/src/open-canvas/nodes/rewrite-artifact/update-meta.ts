@@ -60,5 +60,5 @@ export async function optionallyUpdateArtifactMeta(
     recentHumanMessage,
   ]);
 
-  return optionallyUpdateArtifactResponse;
+  return optionallyUpdateArtifactResponse as any;
 }

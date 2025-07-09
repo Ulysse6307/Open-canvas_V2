@@ -3,6 +3,8 @@ import { graph } from "@opencanvas/agents/dist/open-canvas/index";
 import { evaluate, EvaluationResult } from "langsmith/evaluation";
 import "dotenv/config";
 
+console.log("Début de l’évaluation")
+
 const runGraph = async (
   input: Record<string, any>
 ): Promise<Record<string, any>> => {
@@ -47,6 +49,7 @@ const evaluateHighlights = (run: Run, example?: Example): EvaluationResult => {
 };
 
 async function runHighlightEval() {
+
   const datasetName = "open-canvas-deterministic-highlights";
   await evaluate(runGraph, {
     data: datasetName,

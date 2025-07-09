@@ -9,6 +9,7 @@ export class StreamWorkerService {
 
   async *streamData(config: StreamConfig): AsyncGenerator<any, void, unknown> {
     this.worker.postMessage(config);
+    
 
     while (true) {
       const event: MessageEvent<StreamWorkerMessage> = await new Promise(

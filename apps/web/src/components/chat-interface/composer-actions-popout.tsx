@@ -83,7 +83,7 @@ export function ComposerActionsPopOut(props: ComposerActionsPopOutProps) {
       }}
     >
       <motion.div
-        className="rounded-full flex items-center h-8 justify-start px-2 py-5 bg-blue-50 overflow-hidden"
+        className="rounded-full flex items-center h-8 justify-start px-2 py-5 bg-tamar-light overflow-hidden shadow-sm"
         variants={containerVariants}
         animate={isExpanded ? "expanded" : "collapsed"}
         initial="collapsed"
@@ -91,7 +91,7 @@ export function ComposerActionsPopOut(props: ComposerActionsPopOutProps) {
         <div className="flex items-center gap-2">
           <CirclePlus
             className={cn(
-              "size-6 flex-shrink-0",
+              "size-6 flex-shrink-0 text-tamar-violet",
               isExpanded && "opacity-60 transition-all ease-in-out"
             )}
           />
@@ -99,17 +99,17 @@ export function ComposerActionsPopOut(props: ComposerActionsPopOutProps) {
             <TooltipIconButton
               tooltip="Web search"
               variant="ghost"
-              className="size-7 flex-shrink-0 bg-blue-100 hover:bg-blue-100"
+              className="size-7 flex-shrink-0 hover:bg-tamar-violet/10"
               onClick={() => setSearchEnabled((p) => !p)}
             >
-              <Globe />
+              <Globe className="text-tamar-violet" />
             </TooltipIconButton>
           )}
           {!isDefaultSelected && (
             <AssistantSelect
               userId={props.userId}
               chatStarted={props.chatStarted}
-              className="bg-blue-100 hover:bg-blue-100 transition-colors ease-in-out"
+              className="hover:bg-tamar-violet/10 transition-colors ease-in-out"
               onOpenChange={(isOpen) => {
                 setIsAssistantSelectOpen(isOpen);
                 if (!isOpen && !isMouseOver) {
@@ -133,17 +133,17 @@ export function ComposerActionsPopOut(props: ComposerActionsPopOutProps) {
                 <TooltipIconButton
                   tooltip="Web search"
                   variant="ghost"
-                  className="size-7 flex-shrink-0 hover:bg-blue-100 transition-colors ease-in-out"
+                  className="size-7 flex-shrink-0 hover:bg-tamar-violet/10 transition-colors ease-in-out"
                   onClick={() => setSearchEnabled((p) => !p)}
                 >
-                  <Globe />
+                  <Globe className="text-tamar-violet" />
                 </TooltipIconButton>
               )}
               {isDefaultSelected && (
                 <AssistantSelect
                   userId={props.userId}
                   chatStarted={props.chatStarted}
-                  className="hover:bg-blue-100 transition-colors ease-in-out"
+                  className="hover:bg-tamar-violet/10 transition-colors ease-in-out"
                   onOpenChange={(isOpen) => {
                     setIsAssistantSelectOpen(isOpen);
                     if (!isOpen && !isMouseOver) {
@@ -152,7 +152,7 @@ export function ComposerActionsPopOut(props: ComposerActionsPopOutProps) {
                   }}
                 />
               )}
-              <ComposerAddAttachment className="hover:bg-blue-100 transition-colors ease-in-out" />
+              <ComposerAddAttachment className="hover:bg-tamar-violet/10 transition-colors ease-in-out" />
             </motion.div>
           )}
         </AnimatePresence>

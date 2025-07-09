@@ -62,8 +62,12 @@ const ThinkingAssistantMessageComponent = ({
       className="w-full"
     >
       <AccordionItem value={`accordion-${id}`}>
-        <AccordionTrigger>Thoughts</AccordionTrigger>
-        <AccordionContent>{contentText}</AccordionContent>
+        <AccordionTrigger className="text-tamar-violet font-medium hover:text-tamar-violet/90">
+          Thoughts
+        </AccordionTrigger>
+        <AccordionContent className="text-tamar-gray">
+          {contentText}
+        </AccordionContent>
       </AccordionItem>
     </Accordion>
   );
@@ -88,8 +92,8 @@ const WebSearchMessageComponent = ({ message }: { message: MessageState }) => {
     <div className="flex mx-8">
       <Button
         onClick={handleShowWebSearchResults}
-        variant="secondary"
-        className="bg-blue-50 hover:bg-blue-100 transition-all ease-in-out duration-200 w-full"
+        variant="outline"
+        className="border-tamar-violet text-tamar-violet hover:bg-tamar-violet/10 hover:border-tamar-violet/80 transition-all ease-in-out duration-200 w-full"
       >
         <Globe className="size-4 mr-2" />
         Web Search Results
@@ -121,10 +125,9 @@ export const AssistantMessage: FC<AssistantMessageProps> = ({
   return (
     <MessagePrimitive.Root className="relative grid w-full max-w-2xl grid-cols-[auto_auto_1fr] grid-rows-[auto_1fr] py-4">
       <Avatar className="col-start-1 row-span-full row-start-1 mr-4">
-        <AvatarFallback>A</AvatarFallback>
+        <AvatarFallback className="bg-tamar-violet text-white">A</AvatarFallback>
       </Avatar>
-
-      <div className="text-foreground col-span-2 col-start-2 row-start-1 my-1.5 max-w-xl break-words leading-7">
+      <div className="text-tamar-gray col-span-2 col-start-2 row-start-1 my-1.5 max-w-xl break-words leading-7">
         <MessagePrimitive.Content components={{ Text: MarkdownText }} />
         {isLast && runId && (
           <MessagePrimitive.If lastOrHover assistant>
@@ -152,7 +155,7 @@ export const UserMessage: FC = () => {
         message={humanMessage}
         className="col-start-2 row-start-1"
       />
-      <div className="bg-muted text-foreground col-start-2 row-start-2 max-w-xl break-words rounded-3xl px-5 py-2.5">
+      <div className="bg-tamar-light text-tamar-gray col-start-2 row-start-2 max-w-xl break-words rounded-3xl px-5 py-2.5">
         <MessagePrimitive.Content />
       </div>
     </MessagePrimitive.Root>
@@ -178,7 +181,7 @@ const AssistantMessageBarComponent = ({
       className="flex items-center mt-2"
     >
       {feedbackSubmitted ? (
-        <TighterText className="text-gray-500 text-sm">
+        <TighterText className="text-tamar-gray text-sm">
           Feedback received! Thank you!
         </TighterText>
       ) : (

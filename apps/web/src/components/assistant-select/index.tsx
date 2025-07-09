@@ -67,6 +67,11 @@ function AssistantSelectComponent(props: AssistantSelectProps) {
 
   const metadata = selectedAssistant?.metadata as Record<string, any>;
 
+  const icon = getIcon(
+    metadata?.iconData?.iconName as string | undefined,
+    metadata?.iconData?.iconColor || "#6B46C1"
+  );
+
   return (
     <>
       <DropdownMenu
@@ -80,20 +85,19 @@ function AssistantSelectComponent(props: AssistantSelectProps) {
           props.onOpenChange?.(c);
         }}
       >
-        <DropdownMenuTrigger className="text-gray-600" asChild>
+        <DropdownMenuTrigger asChild>
           <TooltipIconButton
             tooltip="Change assistant"
             variant="ghost"
-            className={cn("size-7 mt-1", props.className)}
+            className={cn("size-7 mt-1 lucide-user", props.className)}
             delayDuration={200}
-            style={{ color: metadata?.iconData?.iconColor || "#4b5563" }}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               setOpen(true);
             }}
           >
-            {getIcon(metadata?.iconData?.iconName as string | undefined)}
+            {icon}
           </TooltipIconButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="max-h-[600px] max-w-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 ml-4">
@@ -102,7 +106,7 @@ function AssistantSelectComponent(props: AssistantSelectProps) {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {isLoadingAllAssistants && !assistants?.length ? (
-            <span className="text-sm text-gray-600 flex items-center justify-start gap-1 p-2">
+            <span className="text-sm text-tamar-gray flex items-center justify-start gap-1 p-2">
               Loading
               <Icons.LoaderCircle className="w-4 h-4 animate-spin" />
             </span>
@@ -112,11 +116,13 @@ function AssistantSelectComponent(props: AssistantSelectProps) {
                 onSelect={(e) => {
                   handleNewAssistantClick(e);
                 }}
-                className="flex items-center justify-start gap-2"
+                className="flex items-center justify-start gap-2 hover:bg-tamar-violet/10"
                 disabled={allDisabled}
               >
-                <Icons.CirclePlus className="w-4 h-4" />
-                <TighterText className="font-medium">New</TighterText>
+                <Icons.CirclePlus className="w-4 h-4 text-tamar-violet" />
+                <TighterText className="font-medium text-tamar-gray">
+                  New
+                </TighterText>
               </DropdownMenuItem>
               {assistants.map((assistant) => (
                 <AssistantItem

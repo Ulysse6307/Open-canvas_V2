@@ -73,15 +73,15 @@ function CommandModelItem({
     <CommandItem
       value={model.name}
       onSelect={handleModelChange}
-      className="flex items-center"
+      className="flex items-center hover:bg-tamar-light/10 group"
     >
       <Check
         className={cn(
-          "mr-1 size-4",
+          "mr-1 size-4 text-tamar-violet",
           selectedModelName === model.name ? "opacity-100" : "opacity-0"
         )}
       />
-      <span className="flex flex-row w-full items-center justify-start gap-2">
+      <span className="flex flex-row w-full items-center justify-start gap-2 text-tamar-gray">
         {model.label}
         {model.isNew && <IsNewBadge />}
       </span>
@@ -99,7 +99,7 @@ function CommandModelItem({
         />
       ) : (
         <button
-          className="ml-auto flex-shrink-0 flex size-6 items-center justify-center focus:outline-none focus:ring-0"
+          className="ml-auto flex-shrink-0 flex size-6 items-center justify-center focus:outline-none focus:ring-0 group-hover:text-tamar-violet transition-colors duration-200"
           onClick={(e) => {
             e.stopPropagation();
             setOpenConfigModelId(model.name);
@@ -180,7 +180,6 @@ export default function ModelSelector({
     ) {
       return false;
     }
-
     if (
       model.name.includes("groq/") &&
       process.env.NEXT_PUBLIC_GROQ_ENABLED === "false"
@@ -223,7 +222,9 @@ export default function ModelSelector({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
-        className="min-w-[180px] w-[250px] bg-transparent shadow-none focus:outline-none cursor-pointer hover:bg-gray-100 rounded transition-colors border-none text-gray-600 h-9 px-3 py-2 text-sm focus:ring-1 focus:ring-ring"
+        className={cn(
+          "min-w-[180px] w-[250px] bg-white border border-tamar-gray/10 shadow-sm focus:outline-none cursor-pointer hover:bg-tamar-light/10 rounded transition-colors text-tamar-gray h-9 px-3 py-2 text-sm focus:ring-1 focus:ring-tamar-violet/20"
+        )}
         asChild
       >
         <div className="flex items-center pr-2 truncate">
@@ -238,10 +239,10 @@ export default function ModelSelector({
             {selectedModelLabel}
             {isSelectedModelNew && <IsNewBadge />}
           </span>
-          <CaretSortIcon className="size-4 opacity-50 ml-auto" />
+          <CaretSortIcon className="size-4 ml-auto text-tamar-gray/60 group-hover:text-tamar-violet transition-colors duration-200" />
         </div>
       </PopoverTrigger>
-      <PopoverContent className="min-w-[180px] w-[280px] p-0 shadow-md rounded-md">
+      <PopoverContent className="min-w-[180px] w-[280px] p-0 shadow-sm rounded-xl bg-white border border-tamar-gray/10">
         <Command>
           <CommandList>
             {openaiModelGroup.length > 0 && (

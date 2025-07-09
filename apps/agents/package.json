@@ -12,7 +12,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "yarn langgraphjs dev --port 54367 --config ../../langgraph.json --no-browser",
+    "dev": "yarn langgraphjs dev --port 54367 --host 0.0.0.0 --config ../../langgraph.json --no-browser",
     "build": "yarn clean && tsc",
     "clean": "rm -rf ./dist .turbo || true",
     "format": "prettier --config .prettierrc --write \"src\" \"scripts\"",
@@ -26,7 +26,7 @@
     "@ffmpeg/util": "^0.12.2",
     "@langchain/anthropic": "^0.3.21",
     "@langchain/community": "^0.3.45",
-    "@langchain/core": "^0.3.57",
+    "@langchain/core": "^0.3.59",
     "@langchain/exa": "^0.1.0",
     "@langchain/google-genai": "^0.2.10",
     "@langchain/groq": "^0.2.2",

@@ -39,18 +39,20 @@ export function AssistantItem({
         disabled={allDisabled}
         className={cn(
           "flex items-center justify-start gap-2 w-full",
-          isSelected && "bg-gray-50"
+          isSelected && "bg-tamar-light"
         )}
       >
-        <span
-          style={{ color: metadata?.iconData?.iconColor || "#4b5563" }}
-          className="flex items-center justify-start w-4 h-4"
-        >
-          {getIcon(metadata?.iconData?.iconName as string | undefined)}
+        <span className="flex items-center justify-start w-4 h-4">
+          <span className="force-icon-color">
+          {getIcon(
+            metadata?.iconData?.iconName as string | undefined,
+            metadata?.iconData?.iconColor || "#6B46C1" // <-- Ici, on force la couleur Tamar.ai par défaut
+          )}
+          </span>
         </span>
         {assistant.name}
         {isDefault && (
-          <span className="text-xs text-gray-500 ml-auto">{"(default)"}</span>
+          <span className="text-xs text-tamar-gray ml-auto">{"(default)"}</span>
         )}
         {isSelected && <span className="ml-auto">•</span>}
       </DropdownMenuItem>

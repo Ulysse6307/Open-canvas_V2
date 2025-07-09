@@ -2,7 +2,6 @@
 
 import { ComposerPrimitive, ThreadPrimitive } from "@assistant-ui/react";
 import { type FC, useState, useEffect } from "react";
-
 import { TooltipIconButton } from "@/components/ui/assistant-ui/tooltip-icon-button";
 import { SendHorizontalIcon } from "lucide-react";
 import { DragAndDropWrapper } from "./drag-drop-wrapper";
@@ -45,7 +44,7 @@ const getRandomPlaceholder = (searchEnabled: boolean) => {
       ];
 };
 
-const CircleStopIcon = () => {
+const CircleStopIcon = ({ className }: { className?: string }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -53,6 +52,7 @@ const CircleStopIcon = () => {
       fill="currentColor"
       width="16"
       height="16"
+      className={className}
     >
       <rect width="10" height="10" x="3" y="3" rx="2" />
     </svg>
@@ -74,7 +74,9 @@ export const Composer: FC<ComposerProps> = (props: ComposerProps) => {
 
   return (
     <DragAndDropWrapper>
-      <ComposerPrimitive.Root className="focus-within:border-aui-ring/20 flex flex-col w-full min-h-[64px] flex-wrap items-center justify-center border px-2.5 shadow-sm transition-colors ease-in bg-white rounded-2xl">
+      <ComposerPrimitive.Root
+        className="focus-within:border-ring/20 flex flex-col w-full min-h-[64px] flex-wrap items-center justify-center border border-input px-2.5 shadow-sm transition-colors ease-in bg-white rounded-xl hover:shadow-md"
+      >
         <div className="flex flex-wrap gap-2 items-start mr-auto">
           <ComposerAttachments />
         </div>
@@ -88,16 +90,16 @@ export const Composer: FC<ComposerProps> = (props: ComposerProps) => {
             autoFocus
             placeholder={placeholder}
             rows={1}
-            className="placeholder:text-muted-foreground max-h-40 flex-grow resize-none border-none bg-transparent px-2 py-4 text-sm outline-none focus:ring-0 disabled:cursor-not-allowed"
+            className="placeholder:text-tamar-gray max-h-40 flex-grow resize-none border-none bg-transparent px-2 py-4 text-sm outline-none focus:ring-0 disabled:cursor-not-allowed"
           />
           <ThreadPrimitive.If running={false}>
             <ComposerPrimitive.Send asChild>
               <TooltipIconButton
                 tooltip="Send"
                 variant="default"
-                className="my-2.5 size-8 p-2 transition-opacity ease-in"
+                className="my-2.5 size-8 p-2 transition-opacity ease-in bg-tamar-violet text-white hover:bg-tamar-violet/90"
               >
-                <SendHorizontalIcon />
+                <SendHorizontalIcon className="text-white" />
               </TooltipIconButton>
             </ComposerPrimitive.Send>
           </ThreadPrimitive.If>
@@ -106,9 +108,9 @@ export const Composer: FC<ComposerProps> = (props: ComposerProps) => {
               <TooltipIconButton
                 tooltip="Cancel"
                 variant="default"
-                className="my-2.5 size-8 p-2 transition-opacity ease-in"
+                className="my-2.5 size-8 p-2 transition-opacity ease-in bg-tamar-violet text-white hover:bg-tamar-violet/90"
               >
-                <CircleStopIcon />
+                <CircleStopIcon className="text-white" />
               </TooltipIconButton>
             </ComposerPrimitive.Cancel>
           </ThreadPrimitive.If>

@@ -1,10 +1,7 @@
 import { ProgrammingLanguageOptions } from "@opencanvas/shared/types";
 import { ThreadPrimitive, useThreadRuntime } from "@assistant-ui/react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FC, useMemo } from "react";
-import { TighterText } from "../ui/header";
 import { NotebookPen } from "lucide-react";
-import { ProgrammingLanguagesDropdown } from "../ui/programming-lang-dropdown";
 import { Button } from "../ui/button";
 
 const QUICK_START_PROMPTS_SEARCH = [
@@ -80,7 +77,7 @@ const QuickStartPrompts = ({ searchEnabled }: QuickStartPromptsProps) => {
             key={`quick-start-prompt-${index}`}
             onClick={() => handleClick(prompt)}
             variant="outline"
-            className="min-h-[60px] w-full flex items-center justify-center p-6 whitespace-normal text-gray-500 hover:text-gray-700 transition-colors ease-in rounded-2xl"
+            className="min-h-[60px] w-full flex items-center justify-center p-6 whitespace-normal text-tamar-gray bg-white border border-input rounded-2xl shadow-sm transition-all duration-200 ease-in-out hover:shadow-lg hover:scale-[1.02] hover:bg-gradient-to-r hover:from-tamar-violet hover:to-[#A259FF] hover:text-white"
           >
             <p className="text-center break-words text-sm font-normal">
               {prompt}
@@ -93,28 +90,22 @@ const QuickStartPrompts = ({ searchEnabled }: QuickStartPromptsProps) => {
 };
 
 const QuickStartButtons = (props: QuickStartButtonsProps) => {
-  const handleLanguageSubmit = (language: ProgrammingLanguageOptions) => {
-    props.handleQuickStart("code", language);
-  };
-
   return (
     <div className="flex flex-col gap-8 items-center justify-center w-full">
       <div className="flex flex-col gap-6">
-        <p className="text-gray-600 text-sm">Start with a blank canvas</p>
-        <div className="flex flex-row gap-1 items-center justify-center w-full">
+        <p className="text-tamar-gray text-sm">Start with a blank canvas</p>
+        <div className="flex flex-row gap-4 items-center justify-center w-full">
           <Button
-            variant="outline"
-            className="text-gray-500 hover:text-gray-700 transition-colors ease-in rounded-2xl flex items-center justify-center gap-2 w-[250px] h-[64px]"
             onClick={() => props.handleQuickStart("text")}
+            className="rounded-xl h-[64px] w-[250px] flex items-center justify-center gap-2 bg-gradient-to-r from-tamar-violet to-[#A259FF] text-white shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02]"
           >
+            <NotebookPen className="w-5 h-5" />
             New Markdown
-            <NotebookPen />
           </Button>
-          <ProgrammingLanguagesDropdown handleSubmit={handleLanguageSubmit} />
         </div>
       </div>
       <div className="flex flex-col gap-6 mt-2 w-full">
-        <p className="text-gray-600 text-sm">or with a message</p>
+        <p className="text-tamar-gray text-sm">or with a message</p>
         {props.composer}
         <QuickStartPrompts searchEnabled={props.searchEnabled} />
       </div>
@@ -136,15 +127,16 @@ export const ThreadWelcome: FC<ThreadWelcomeProps> = (
 ) => {
   return (
     <ThreadPrimitive.Empty>
-      <div className="flex items-center justify-center mt-16 w-full">
-        <div className="text-center max-w-3xl w-full">
-          <Avatar className="mx-auto">
-            <AvatarImage src="/lc_logo.jpg" alt="LangChain Logo" />
-            <AvatarFallback>LC</AvatarFallback>
-          </Avatar>
-          <TighterText className="mt-4 text-lg font-medium">
-            What would you like to write today?
-          </TighterText>
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-var(--header-height))] bg-white">
+        <div className="text-center max-w-3xl w-full py-12 px-4">
+          {/* Titre premium avec Tamar.ai mis en valeur */}
+          <h1 className="mt-6 text-3xl font-bold">
+         
+            <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-tamar-violet to-[#A259FF]">Tamar.ai</span>
+          </h1>
+          <p className="mt-2 text-tamar-gray text-sm">
+            Commencez un nouveau document ou choisissez une suggestion.
+          </p>
           <div className="mt-8 w-full">
             <QuickStartButtons
               composer={props.composer}

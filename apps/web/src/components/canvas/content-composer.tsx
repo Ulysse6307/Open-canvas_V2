@@ -167,6 +167,7 @@ export function ContentComposerChatInterfaceComponent(
   );
 }
 
+
 export const ContentComposerChatInterface = React.memo(
   ContentComposerChatInterfaceComponent
 );

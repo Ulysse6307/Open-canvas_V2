@@ -86,7 +86,7 @@ export function CreateEditAssistantDialog(
   const [systemPrompt, setSystemPrompt] = useState("");
   const [iconName, setIconName] = useState<keyof typeof Icons>("User");
   const [hasSelectedIcon, setHasSelectedIcon] = useState(false);
-  const [iconColor, setIconColor] = useState("#000000");
+  const [iconColor, setIconColor] = useState("#6B46C1"); // <-- Par défaut, violet Tamar.ai
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
   const {
@@ -113,7 +113,7 @@ export function CreateEditAssistantDialog(
       );
       setHasSelectedIcon(true);
       setIconName(metadata?.iconData?.iconName || "User");
-      setIconColor(metadata?.iconData?.iconColor || "#000000");
+      setIconColor(metadata?.iconData?.iconColor || "#6B46C1"); // <-- Par défaut, violet Tamar.ai
       setLoadingDocuments(true);
       getContextDocuments(props.assistant.assistant_id)
         .then((documents) => {
@@ -137,7 +137,6 @@ export function CreateEditAssistantDialog(
                 })
               )
             );
-
             setUrls(urls);
             setDocuments(arrayToFileList(files));
           }
@@ -148,7 +147,7 @@ export function CreateEditAssistantDialog(
       setDescription("");
       setSystemPrompt("");
       setIconName("User");
-      setIconColor("#000000");
+      setIconColor("#6B46C1"); // <-- Par défaut, violet Tamar.ai
       setDocuments(undefined);
       setUrls([]);
     }
@@ -242,7 +241,7 @@ export function CreateEditAssistantDialog(
     setDescription("");
     setSystemPrompt("");
     setIconName("User");
-    setIconColor("#000000");
+    setIconColor("#6B46C1"); // <-- Par défaut, violet Tamar.ai
   };
 
   const handleRemoveFile = (index: number) => {
@@ -299,7 +298,6 @@ export function CreateEditAssistantDialog(
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-
           <Label htmlFor="description">
             <TighterText>Description</TighterText>
           </Label>
@@ -311,7 +309,6 @@ export function CreateEditAssistantDialog(
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-
           <Label htmlFor="system-prompt">
             <TighterText className="flex items-center">
               System Prompt
@@ -329,7 +326,6 @@ export function CreateEditAssistantDialog(
             onChange={(e) => setSystemPrompt(e.target.value)}
             rows={5}
           />
-
           <div className="flex w-full items-center justify-between gap-4">
             <div className="flex flex-col gap-4 items-start justify-start w-full">
               <Label htmlFor="icon">
@@ -377,7 +373,6 @@ export function CreateEditAssistantDialog(
               </div>
             </div>
           </div>
-
           <ContextDocuments
             documents={documents}
             setDocuments={setDocuments}
@@ -387,7 +382,6 @@ export function CreateEditAssistantDialog(
             urls={urls}
             setUrls={setUrls}
           />
-
           <div className="flex items-center justify-center w-full mt-4 gap-3">
             <Button
               disabled={props.allDisabled}

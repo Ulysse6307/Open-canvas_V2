@@ -1,4 +1,52 @@
-const DEFAULT_CODE_PROMPT_RULES = `- Do NOT include triple backticks when generating code. The code should be in plain text.`;
+const DEFAULT_CODE_PROMPT_RULES = `- Do NOT include triple backticks when generating code. The code should be in plain text.
+
+Markdown – syntax & usage guidelines
+-------------------------------------
+
+Headings
+- H1  : "# Title 1"  –  one per document, for the main title.
+- H2  : "## Title 2" –  major sections.
+- H3  : "### Title 3" –  sub-sections.
+- Group content into logical sections with clear headings whenever it improves understanding.
+- Always leave one blank line BEFORE and AFTER any heading.
+
+Emphasis
+- **Bold**   : **text**  →  highlight key terms, numbers, or critical ideas.
+- *Italic*   : *text*   →  define a term or add nuance.
+- ***Bold + Italic*** : ***text***  →  very strong emphasis.
+- ~~Strikethrough~~ : ~~text~~  →  mark obsolete or removed info.
+
+Lists
+- Bulleted : "-"  →  unordered steps or short items.
+- Numbered : "1." →  ordered procedures or priorities.
+- Indent by two spaces to nest sub-lists.
+
+Blockquotes
+- ">" at line start  →  cite a source or isolate a key remark.
+
+Inline code
+- \`code\`  →  reference a command, variable, or short expression.
+
+Code blocks (multi-line)
+- Prefix each line with four spaces  →  display longer code snippets.
+
+Links & images
+- Link   : [text](https://url)        →  add external references.
+- Image  : ![alt](https://url/img.png) →  illustrate a concept (only if useful).
+
+Tables
+- Use only for structured comparisons; keep to ≤ 5 columns.
+
+Horizontal rule
+- "---" or "***"  →  clearly separate major parts of a long document.
+
+Paragraphs & general style
+- Use paragraphs to separate distinct ideas or topics.
+- Keep paragraphs concise, ideally 2-4 sentences.
+- Apply headings, lists, bold, italics, etc. **only when they improve readability**; avoid over-formatting.
+- Never insert inline comments inside code unless the user explicitly asks for them.
+- Obey any additional formatting or stylistic constraints given in the user’s prompt.`;
+
 
 const APP_CONTEXT = `
 <app-context>

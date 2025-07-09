@@ -36,12 +36,12 @@ const ThreadItem = (props: ThreadProps) => {
       onMouseLeave={() => setIsHovering(false)}
     >
       <Button
-        className="px-2 justify-start items-center flex-grow min-w-[191px] pr-0"
+        className="px-2 justify-start items-center flex-grow min-w-[191px] pr-0 hover:bg-transparent"
         size="sm"
         variant="ghost"
         onClick={props.onClick}
       >
-        <TighterText className="truncate text-sm font-light w-full text-left">
+        <TighterText className="truncate text-sm font-light w-full text-left text-tamar-gray hover:text-tamar-violet transition-colors duration-200">
           {props.label}
         </TighterText>
       </Button>
@@ -50,15 +50,16 @@ const ThreadItem = (props: ThreadProps) => {
           tooltip="Delete thread"
           variant="ghost"
           onClick={props.onDelete}
+          className="hover:bg-transparent"
         >
-          <Trash2 className="w-12 h-12 text-[#575757] hover:text-red-500 transition-colors ease-in" />
+          <Trash2 className="w-5 h-5 text-tamar-gray hover:text-red-500 transition-colors duration-200" />
         </TooltipIconButton>
       )}
     </div>
   );
 };
 
-const LoadingThread = () => <Skeleton className="w-full h-8" />;
+const LoadingThread = () => <Skeleton className="w-full h-8 rounded-md" />;
 
 const convertThreadActualToThreadProps = (
   thread: Thread,
@@ -179,7 +180,7 @@ function ThreadsList(props: ThreadsListProps) {
       {Object.entries(props.groupedThreads).map(([group, threads]) =>
         threads.length > 0 ? (
           <div key={group}>
-            <TighterText className="text-sm font-medium mb-1 pl-2">
+            <TighterText className="text-sm font-semibold mb-1 pl-2 text-tamar-blue">
               {prettifyDateLabel(group)}
             </TighterText>
             <div className="flex flex-col gap-1">
@@ -240,21 +241,21 @@ export function ThreadHistoryComponent(props: ThreadHistoryProps) {
         <TooltipIconButton
           tooltip="History"
           variant="ghost"
-          className="w-fit h-fit p-2"
+          className="w-fit h-fit p-2 hover:bg-transparent"
         >
           <PiChatsCircleLight
-            className="w-6 h-6 text-gray-600"
+            className="w-6 h-6 text-tamar-gray hover:text-tamar-violet transition-colors duration-200"
             strokeWidth={8}
           />
         </TooltipIconButton>
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="border-none overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+        className="border-none overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 bg-tamar-light"
         aria-describedby={undefined}
       >
         <SheetTitle>
-          <TighterText className="px-2 text-lg text-gray-600">
+          <TighterText className="px-2 text-lg text-tamar-blue">
             Chat History
           </TighterText>
         </SheetTitle>
@@ -266,7 +267,7 @@ export function ThreadHistoryComponent(props: ThreadHistoryProps) {
             ))}
           </div>
         ) : !userThreads.length ? (
-          <p className="px-3 text-gray-500">No items found in history.</p>
+          <p className="px-3 text-tamar-gray">No items found in history.</p>
         ) : (
           <ThreadsList groupedThreads={groupedThreads} />
         )}

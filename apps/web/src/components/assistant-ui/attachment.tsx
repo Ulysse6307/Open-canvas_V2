@@ -92,7 +92,7 @@ const AttachmentPreviewDialog: FC<PropsWithChildren> = ({ children }) => {
   return (
     <Dialog>
       <DialogTrigger
-        className="hover:bg-accent/50 cursor-pointer transition-colors"
+        className="hover:bg-tamar-violet/10 cursor-pointer transition-colors" // <-- Couleur Tamar
         asChild
       >
         {children}
@@ -111,9 +111,9 @@ const AttachmentThumb: FC = () => {
   const isImage = useAttachment((a) => a.type === "image");
   const src = useAttachmentSrc();
   return (
-    <Avatar className="bg-muted flex size-10 items-center justify-center rounded border text-sm">
+    <Avatar className="flex size-10 items-center justify-center rounded border bg-tamar-light text-tamar-gray">
       <AvatarFallback delayMs={isImage ? 200 : 0}>
-        <FileIcon />
+        <FileIcon className="text-tamar-gray" /> {/* <-- Couleur Tamar */}
       </AvatarFallback>
       <AvatarImage src={src} />
     </Avatar>
@@ -142,13 +142,13 @@ const AttachmentUI: FC = () => {
         <AttachmentPrimitive.Root className="relative mt-3">
           <AttachmentPreviewDialog>
             <TooltipTrigger asChild>
-              <div className="flex h-12 w-40 items-center justify-center gap-2 rounded-lg border p-1">
+              <div className="flex h-12 w-40 items-center justify-center gap-2 rounded-lg border border-input p-1 bg-tamar-light hover:bg-tamar-violet/10 transition-colors"> {/* <-- Couleurs Tamar */}
                 <AttachmentThumb />
                 <div className="flex-grow basis-0">
-                  <p className="text-muted-foreground line-clamp-1 text-ellipsis break-all text-xs font-bold">
+                  <p className="text-tamar-gray line-clamp-1 text-ellipsis break-all text-xs font-bold"> {/* <-- Couleur Tamar */}
                     <AttachmentPrimitive.Name />
                   </p>
-                  <p className="text-muted-foreground text-xs">{typeLabel}</p>
+                  <p className="text-tamar-gray text-xs">{typeLabel}</p> {/* <-- Couleur Tamar */}
                 </div>
               </div>
             </TooltipTrigger>
@@ -168,10 +168,10 @@ const AttachmentRemove: FC = () => {
     <AttachmentPrimitive.Remove asChild>
       <TooltipIconButton
         tooltip="Remove file"
-        className="text-muted-foreground [&>svg]:bg-background absolute -right-3 -top-3 size-6 [&>svg]:size-4 [&>svg]:rounded-full"
+        className="absolute -right-3 -top-3 size-6 text-tamar-violet hover:text-tamar-violet/80"
         side="top"
       >
-        <CircleXIcon />
+        <CircleXIcon className="size-4" />
       </TooltipIconButton>
     </AttachmentPrimitive.Remove>
   );
@@ -201,7 +201,7 @@ export const ComposerAddAttachment: FC<{ className?: string }> = ({
   return (
     <ComposerPrimitive.AddAttachment asChild>
       <TooltipIconButton
-        className={cn("size-7", className)}
+        className={cn("size-7 text-tamar-violet hover:text-tamar-violet/80", className)}
         tooltip="Add Attachment"
         variant="ghost"
       >

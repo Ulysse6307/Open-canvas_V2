@@ -50,7 +50,7 @@ const ViewOrHidePromptIcon = (props: ViewOrHidePromptIconProps) => (
   <TooltipIconButton
     tooltip={props.showFullPrompt ? "Hide prompt" : "View prompt"}
     variant="ghost"
-    className="transition-colors"
+    className="hover:bg-transparent"
     delayDuration={400}
     onClick={(e) => {
       e.preventDefault();
@@ -59,12 +59,13 @@ const ViewOrHidePromptIcon = (props: ViewOrHidePromptIconProps) => (
     }}
   >
     {props.showFullPrompt ? (
-      <EyeOff className="w-4 h-4 text-gray-600" />
+      <EyeOff className="w-4 h-4 text-tamar-gray hover:text-tamar-violet transition-colors duration-200" />
     ) : (
-      <Eye className="w-4 h-4 text-gray-600" />
+      <Eye className="w-4 h-4 text-tamar-gray hover:text-tamar-violet transition-colors duration-200" />
     )}
   </TooltipIconButton>
 );
+
 
 export function NewCustomQuickActionDialog(
   props: NewCustomQuickActionDialogProps

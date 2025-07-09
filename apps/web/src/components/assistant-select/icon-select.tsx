@@ -1,3 +1,5 @@
+"use client";
+
 import * as Icons from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import {
@@ -15,6 +17,7 @@ import startCase from "lodash/startCase";
 import uniq from "lodash/uniq";
 import uniqBy from "lodash/uniqBy";
 import { Button } from "../ui/button";
+import { getIcon } from "./utils"; // Importe getIcon depuis le même dossier
 
 type KeyofIcons = keyof typeof Icons;
 
@@ -115,12 +118,17 @@ export function IconSelect({
         {hasSelectedIcon ? (
           <Button
             variant="outline"
-            className="flex flex-row items-center justify-between"
+            className="flex flex-row items-center justify-between bg-white border border-input text-tamar-gray hover:bg-tamar-violet/10"
             disabled={allDisabled}
           >
             <div className="flex flex-row items-center gap-2 justify-start">
-              <span style={{ color: iconColor }}>
-                {React.createElement(Icons[selectedIcon] as React.ElementType)}
+              <span>
+                <span className="force-icon-color">
+                {getIcon(
+                  selectedIcon,
+                  iconColor || "#6B46C1" // <-- Utilise getIcon avec la couleur
+                )}
+                </span>
               </span>
               {prettifyIconLabel(selectedIcon)}
             </div>
@@ -130,27 +138,29 @@ export function IconSelect({
           <Button
             disabled={allDisabled}
             variant="outline"
-            className="flex justify-between"
+            className="flex justify-between bg-white border border-input text-tamar-gray hover:bg-tamar-violet/10"
           >
             Select an icon {open ? <Icons.ChevronUp /> : <Icons.ChevronDown />}
           </Button>
         )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="h-[400px] w-[400px] ml-auto">
-        <div className="sticky top-0 z-10 bg-white dark:bg-gray-950 p-2">
-          <DropdownMenuLabel className="px-2 pb-2">Icons</DropdownMenuLabel>
+      <DropdownMenuContent className="h-[400px] w-[400px] ml-auto border border-input bg-white">
+        <div className="sticky top-0 z-10 bg-white p-2">
+          <DropdownMenuLabel className="px-2 pb-2 text-tamar-gray">
+            Icons
+          </DropdownMenuLabel>
           <Input
             disabled={allDisabled}
             placeholder="Search icons..."
             onChange={(e) => debouncedSearch(e.target.value)}
             onClick={(e) => e.stopPropagation()}
-            className="mb-2"
+            className="mb-2 bg-white border border-input"
           />
           <DropdownMenuSeparator />
         </div>
         <div className="overflow-y-auto max-h-[420px]" onScroll={handleScroll}>
           {startIndex > 0 && (
-            <div className="py-2 text-center text-sm text-gray-500">
+            <div className="py-2 text-center text-sm text-tamar-gray">
               Scroll up for previous icons
             </div>
           )}
@@ -162,19 +172,22 @@ export function IconSelect({
                 onClick={() => {
                   setSelectedIcon(iconItem.value as KeyofIcons);
                 }}
-                className="flex flex-row items-center gap-2 justify-start w-full"
+                className="flex flex-row items-center gap-2 justify-start w-full hover:bg-tamar-violet/10"
                 disabled={allDisabled}
               >
-                <span style={{ color: iconColor }}>
-                  {React.createElement(
-                    Icons[iconItem.value as KeyofIcons] as React.ElementType
+                <span>
+                  <span className="force-icon-color">
+                  {getIcon(
+                    iconItem.value as KeyofIcons,
+                    iconColor || "#6B46C1" // <-- Utilise getIcon avec la couleur
                   )}
+                  </span>
                 </span>
-                {iconItem.label}
+                <span className="text-tamar-gray">{iconItem.label}</span>
               </DropdownMenuItem>
             ))}
           {startIndex + WINDOW_SIZE < filteredIcons.length && (
-            <div className="py-2 text-center text-sm text-gray-500">
+            <div className="py-2 text-center text-sm text-tamar-gray">
               Scroll down for more icons
             </div>
           )}

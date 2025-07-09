@@ -39,14 +39,15 @@ function ViewRawText({
     >
       <TooltipIconButton
         tooltip={`View ${isRawView ? "rendered" : "raw"} markdown`}
-        variant="outline"
+        variant="ghost"
+        className="hover:bg-transparent"
         delayDuration={400}
         onClick={() => setIsRawView((p) => !p)}
       >
         {isRawView ? (
-          <EyeOff className="w-5 h-5 text-gray-600" />
+          <EyeOff className="w-5 h-5 text-tamar-gray hover:text-tamar-violet transition-colors duration-200" />
         ) : (
-          <Eye className="w-5 h-5 text-gray-600" />
+          <Eye className="w-5 h-5 text-tamar-gray hover:text-tamar-violet transition-colors duration-200" />
         )}
       </TooltipIconButton>
     </motion.div>
@@ -256,7 +257,7 @@ export function TextRendererComponent(props: TextRendererProps) {
       )}
       {isRawView ? (
         <Textarea
-          className="whitespace-pre-wrap font-mono text-sm px-[54px] border-0 shadow-none h-full outline-none ring-0 rounded-none  focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="whitespace-pre-wrap font-mono text-sm px-[54px] border-0 shadow-none h-full outline-none ring-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0"
           value={rawMarkdown}
           onChange={onChangeRawMarkdown}
         />

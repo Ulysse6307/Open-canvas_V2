@@ -17,8 +17,8 @@ export const useLangSmithLinkToolUI = () =>
           onClick={() => window.open(input.args.sharedRunURL, "_blank")}
         >
           <span className="flex flex-row items-center gap-1 w-11 h-7">
-            <ExternalLink />
-            <LangSmithSVG className="text-[#CA632B] hover:text-[#CA632B]/95" />
+            <ExternalLink className="text-tamar-gray hover:text-tamar-gray/90" />
+            <LangSmithSVG className="text-tamar-gray hover:text-tamar-gray/90" />
           </span>
         </TooltipIconButton>
       );
