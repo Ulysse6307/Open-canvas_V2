@@ -92,7 +92,8 @@ function routePostWebSearch(
 
   // This message is used as a way to reference the web search results in future chats.
   const webSearchResultsMessage = createAIMessageFromWebResults(
-    state.webSearchResults
+    state.webSearchResults,
+    state.userAnswer
   );
 
   return new Command({

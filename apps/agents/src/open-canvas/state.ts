@@ -133,6 +133,10 @@ export const OpenCanvasGraphAnnotation = Annotation.Root({
    * The search results to include in context.
    */
   webSearchResults: Annotation<SearchResult[] | undefined>,
+  /**
+   * The user answer from O3's web search response.
+   */
+  userAnswer: Annotation<string | undefined>,
 });
 
 export type OpenCanvasGraphReturnType = Partial<

@@ -451,6 +451,29 @@ export function GraphProvider({ children }: { children: ReactNode }) {
               // Set the query param to trigger the UI
               setWebSearchResultsId(webSearchMessageId);
             }
+
+            // Handle direct search node (simplified web search graph)
+            if (langgraphNode === "search" && !webSearchMessageId) {
+              console.log("🔍 Search node starting - creating web search message");
+              webSearchMessageId = `web-search-results-${uuidv4()}`;
+              // The web search is starting. Add a new message.
+              setMessages((prev) => {
+                return [
+                  ...prev,
+                  new AIMessage({
+                    id: webSearchMessageId,
+                    content: "",
+                    additional_kwargs: {
+                      [OC_WEB_SEARCH_RESULTS_MESSAGE_KEY]: true,
+                      webSearchResults: [],
+                      webSearchStatus: "searching",
+                    },
+                  }),
+                ];
+              });
+              // Set the query param to trigger the UI
+              setWebSearchResultsId(webSearchMessageId);
+            }
           }
 
           if (event === "on_chat_model_stream") {
@@ -1186,9 +1209,11 @@ export function GraphProvider({ children }: { children: ReactNode }) {
             }
 
             if (langgraphNode === "search" && webSearchMessageId) {
+              console.log("🔍 Search node completed, output:", nodeOutput);
               const output = nodeOutput as {
                 webSearchResults: SearchResult[];
               };
+              console.log("🔍 Search results:", output.webSearchResults);
 
               setMessages((prev) => {
                 return prev.map((m) => {

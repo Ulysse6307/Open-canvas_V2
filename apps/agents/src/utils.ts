@@ -602,23 +602,65 @@ export function formatMessages(messages: BaseMessage[]): string {
 }
 
 export function createAIMessageFromWebResults(
-  webResults: SearchResult[]
+  webResults: SearchResult[],
+  userAnswer?: string
 ): AIMessage {
-  const webResultsStr = webResults
-    .map(
-      (r, index) =>
-        `<search-result
-      index="${index}"
-      publishedDate="${r.metadata?.publishedDate || "Unknown"}"
-      author="${r.metadata?.author || "Unknown"}"
-    >
-      [${r.metadata?.title || "Unknown title"}](${r.metadata?.url || "Unknown URL"})
-      ${r.pageContent}
-    </search-result>`
-    )
-    .join("\n\n");
+  let content: string;
+  
+  if (userAnswer) {
+    // Use O3's user answer directly
+    content = `SYSTEM OVERRIDE - MANDATORY INSTRUCTION:
 
-  const content = `Here is some additional context I found from searching the web. This may be useful:\n\n${webResultsStr}`;
+You MUST create an artifact containing EXACTLY this text below. This is not a suggestion or context - this is the EXACT content you must put in the artifact:
+
+---START OF REQUIRED CONTENT---
+${userAnswer}
+---END OF REQUIRED CONTENT---
+
+CRITICAL RULES:
+1. Use the text above as the COMPLETE artifact content
+2. Do NOT add any introduction, conclusion, or explanation
+3. Do NOT modify, summarize, or interpret the content
+4. Do NOT add your own analysis or commentary
+5. The artifact must contain ONLY the text between the markers above
+6. You may format it nicely (markdown, bullets, etc.) but keep ALL the original information
+
+This is a direct copy instruction. Follow it exactly.`;
+  } else {
+    // Fallback to original formatting
+    const webResultsStr = webResults
+      .map(
+        (r, index) =>
+          `<search-result
+        index="${index}"
+        publishedDate="${r.metadata?.publishedDate || "Unknown"}"
+        author="${r.metadata?.author || "Unknown"}"
+      >
+        [${r.metadata?.title || "Unknown title"}](${r.metadata?.url || "Unknown URL"})
+        ${r.pageContent}
+      </search-result>`
+      )
+      .join("\n\n");
+    content = `SYSTEM OVERRIDE - MANDATORY INSTRUCTION:
+
+You MUST create an artifact containing EXACTLY this text below. This is not a suggestion or context - this is the EXACT content you must put in the artifact:
+
+---START OF REQUIRED CONTENT---
+${userAnswer}
+---END OF REQUIRED CONTENT---
+
+CRITICAL RULES:
+1. Use the text above as the COMPLETE artifact content
+2. Do NOT add any introduction, conclusion, or explanation
+3. Do NOT modify, summarize, or interpret the content
+4. Do NOT add your own analysis or commentary
+5. The artifact must contain ONLY the text between the markers above
+6. You may format it nicely (markdown, bullets, etc.) but keep ALL the original information
+
+This is a direct copy instruction. Follow it exactly.`;
+
+    
+  }
 
   return new AIMessage({
     content,

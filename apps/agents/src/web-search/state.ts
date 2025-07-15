@@ -19,6 +19,10 @@ export const WebSearchGraphAnnotation = Annotation.Root({
    * Whether or not to search the web based on the user's latest message.
    */
   shouldSearch: Annotation<boolean>,
+  /**
+   * The user answer from O3's web search response
+   */
+  userAnswer: Annotation<string>,
 });
 
 export type WebSearchState = typeof WebSearchGraphAnnotation.State;

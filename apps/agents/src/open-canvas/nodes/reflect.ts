@@ -2,6 +2,7 @@ import { Client } from "@langchain/langgraph-sdk";
 import { OpenCanvasGraphAnnotation } from "../state.js";
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
 
+
 export const reflectNode = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
@@ -15,6 +16,7 @@ export const reflectNode = async (
       messages: state._messages,
       artifact: state.artifact,
     };
+
     const reflectionConfig = {
       configurable: {
         // Ensure we pass in the current graph's assistant ID as this is

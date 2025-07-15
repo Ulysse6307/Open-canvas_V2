@@ -61,6 +61,8 @@ export async function generatePath(
         : {}),
     };
   }
+
+
   if (state.highlightedText) {
     return {
       next: "updateHighlightedText",
@@ -107,7 +109,7 @@ export async function generatePath(
     };
   }
 
-  if (state.webSearchEnabled) {
+  if (state.webSearchEnabled && !state.highlightedText) {
     return {
       next: "webSearch",
       ...(newMessages.length

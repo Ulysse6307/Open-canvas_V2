@@ -17,7 +17,7 @@ Emphasis
 - ~~Strikethrough~~ : ~~text~~  →  mark obsolete or removed info.
 
 Lists
-- Bulleted : "-"  →  unordered steps or short items.
+- Bulleted : "-"  →  unordered steps or short items. **NEVER use isolated "*" for lists or any other purpose – always use "-" for bullets to avoid rendering issues.**
 - Numbered : "1." →  ordered procedures or priorities.
 - Indent by two spaces to nest sub-lists.
 
@@ -37,15 +37,13 @@ Links & images
 Tables
 - Use only for structured comparisons; keep to ≤ 5 columns.
 
-Horizontal rule
-- "---" or "***"  →  clearly separate major parts of a long document.
-
 Paragraphs & general style
 - Use paragraphs to separate distinct ideas or topics.
 - Keep paragraphs concise, ideally 2-4 sentences.
 - Apply headings, lists, bold, italics, etc. **only when they improve readability**; avoid over-formatting.
 - Never insert inline comments inside code unless the user explicitly asks for them.
 - Obey any additional formatting or stylistic constraints given in the user’s prompt.`;
+
 
 
 const APP_CONTEXT = `

@@ -4,6 +4,7 @@ import {
   getModelFromConfig,
   isUsingO1MiniModel,
 } from "../../utils.js";
+import { ChatOpenAI } from "@langchain/openai";
 import { BaseLanguageModelInput } from "@langchain/core/language_models/base";
 import { AIMessageChunk } from "@langchain/core/messages";
 import { RunnableBinding } from "@langchain/core/runnables";
@@ -104,7 +105,22 @@ export const updateHighlightedText = async (
 
   const contextDocumentMessages = await createContextDocumentMessages(config);
   const isO1MiniModel = isUsingO1MiniModel(config);
-  const response = await model.invoke([
+
+  const modelConfig = getModelConfig(config);
+  let response;
+
+
+
+  if (state.webSearchEnabled && modelConfig.modelName == "gpt-4o-mini") {
+    console.log("MODEL NAME IS GPT-4O-MINI, USING WEB SEARCH");
+    const model_web = new ChatOpenAI({model: modelConfig.modelName})
+    const tool = {"type": "web_search_preview"}
+    const model_with_tools = model_web.bindTools([tool])
+    console.log("le model avec les outils", model_with_tools);
+    //console.log("message recentUserMessage : ", recentUserMessage);
+   // console.log("contextDocumentMessages : ", contextDocumentMessages);
+    //console.log("VOICI CE QUE RECOIT L'AGENT ! : ", formattedPrompt);
+    response = await model_with_tools.invoke([
     {
       role: isO1MiniModel ? "user" : "system",
       content: formattedPrompt,
@@ -112,7 +128,9 @@ export const updateHighlightedText = async (
     ...contextDocumentMessages,
     recentUserMessage,
   ]);
-  const responseContent = response.content as string;
+
+  const responseContent = response.content[0].text as string;
+  console.log("VOICI LA REPONSE du Highlight text AVC WEBSEARCH", responseContent);
 
   const newCurrIndex = state.artifact.contents.length + 1;
   const prevContent = state.artifact.contents.find(
@@ -125,13 +143,19 @@ export const updateHighlightedText = async (
   if (!fullMarkdown.includes(markdownBlock)) {
     throw new Error("Selected text not found in current content");
   }
-  const newFullMarkdown = fullMarkdown.replace(markdownBlock, responseContent);
+
+  const newFullMarkdown = fullMarkdown.replace(markdownBlock, "OIADAODOADHOPAADAPDDAZPAPOPAOPDPAOOPDAOPADAOPD" + responseContent);
+
+  //jusqu'ici, tout fonctionne a merveille, on a la reponse de l'IA, on a le markdown block, on va le remplacer dans le fullMarkdown
 
   const updatedArtifactContent: ArtifactMarkdownV3 = {
     ...prevContent,
     index: newCurrIndex,
     fullMarkdown: newFullMarkdown,
   };
+
+  console.log("STATE ARTIFACT CONTENTS AVEC WEB SEARCH", updatedArtifactContent);
+
 
   return {
     artifact: {
@@ -140,4 +164,57 @@ export const updateHighlightedText = async (
       contents: [...state.artifact.contents, updatedArtifactContent],
     },
   };
+  }
+
+  
+  else {
+
+    console.log("message recentUserMessage : ", recentUserMessage);
+    console.log("contextDocumentMessages : ", contextDocumentMessages);
+    response = await model.invoke([
+    {
+      role: isO1MiniModel ? "user" : "system",
+      content: formattedPrompt,
+    },
+    ...contextDocumentMessages,
+    recentUserMessage,
+  ]);
+    console.log("le model sans les outils", model);
+
+  const responseContent = response.content as string;
+  console.log("VOICI LA REPONSE du Highlight text MAIS SANS WEB SEARCH", responseContent);
+
+  const newCurrIndex = state.artifact.contents.length + 1;
+  const prevContent = state.artifact.contents.find(
+    (c) => c.index === state.artifact.currentIndex && c.type === "text"
+  ) as ArtifactMarkdownV3 | undefined;
+  if (!prevContent) {
+    throw new Error("Previous content not found");
+  }
+
+  if (!fullMarkdown.includes(markdownBlock)) {
+    throw new Error("Selected text not found in current content");
+  }
+  const newFullMarkdown = fullMarkdown.replace(markdownBlock, "AODAONDINDONDO2N" + responseContent);
+
+  const updatedArtifactContent: ArtifactMarkdownV3 = {
+    ...prevContent,
+    index: newCurrIndex,
+    fullMarkdown: newFullMarkdown,
+  };
+
+  console.log("STATE ARTIFACT CONTENTS SANS WEB SEARCH", updatedArtifactContent);
+
+  return {
+    artifact: {
+      ...state.artifact,
+      currentIndex: newCurrIndex,
+      contents: [...state.artifact.contents, updatedArtifactContent],
+    },
+  };
+  
+  }
+
+
+  
 };
