@@ -23,6 +23,8 @@ export const WebSearchGraphAnnotation = Annotation.Root({
    * The user answer from O3's web search response
    */
   userAnswer: Annotation<string>,
+
+  webSearchEnabled: Annotation<boolean>
 });
 
 export type WebSearchState = typeof WebSearchGraphAnnotation.State;

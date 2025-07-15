@@ -344,6 +344,7 @@ export async function getModelFromConfig(
     temperature?: number;
     maxTokens?: number;
     isToolCalling?: boolean;
+    webSearchEnabled?: boolean;
   }
 ): Promise<ReturnType<typeof initChatModel>> {
   const {
@@ -383,7 +384,7 @@ export async function getModelFromConfig(
     (m) => m === modelName
   );
 
-  return await initChatModel(modelName, {
+  const model = await initChatModel(modelName, {
     modelProvider,
     // Certain models (e.g., OpenAI o1) do not support passing the temperature param.
     ...(includeStandardParams
@@ -406,6 +407,14 @@ export async function getModelFromConfig(
         }
       : {}),
   });
+
+  // Add web search tools if enabled and model supports it
+  if (extra?.webSearchEnabled && modelProvider === "openai") {
+    const webSearchTool = {"type": "web_search_preview"};
+    return model.bindTools([webSearchTool]);
+  }
+
+  return model;
 }
 
 const cleanBase64 = (base64String: string): string => {
@@ -611,7 +620,7 @@ export function createAIMessageFromWebResults(
     // Use O3's user answer directly
     content = `SYSTEM OVERRIDE - MANDATORY INSTRUCTION:
 
-You MUST create an artifact containing EXACTLY this text below. This is not a suggestion or context - this is the EXACT content you must put in the artifact:
+You MUST create an artifact containing EXACTLY this text below. The text is between ---START OF REQUIRED CONTENT--- and ---END OF REQUIRED CONTENT---. This is not a suggestion or context - this is the EXACT content you must put in the artifact:
 
 ---START OF REQUIRED CONTENT---
 ${userAnswer}
@@ -628,19 +637,6 @@ CRITICAL RULES:
 This is a direct copy instruction. Follow it exactly.`;
   } else {
     // Fallback to original formatting
-    const webResultsStr = webResults
-      .map(
-        (r, index) =>
-          `<search-result
-        index="${index}"
-        publishedDate="${r.metadata?.publishedDate || "Unknown"}"
-        author="${r.metadata?.author || "Unknown"}"
-      >
-        [${r.metadata?.title || "Unknown title"}](${r.metadata?.url || "Unknown URL"})
-        ${r.pageContent}
-      </search-result>`
-      )
-      .join("\n\n");
     content = `SYSTEM OVERRIDE - MANDATORY INSTRUCTION:
 
 You MUST create an artifact containing EXACTLY this text below. This is not a suggestion or context - this is the EXACT content you must put in the artifact:

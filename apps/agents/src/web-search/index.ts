@@ -1,5 +1,5 @@
 import { StateGraph, START, END } from "@langchain/langgraph";
-import { WebSearchGraphAnnotation, WebSearchState } from "./state.js";
+import { WebSearchGraphAnnotation } from "./state.js";
 import { search } from "./nodes/search.js";
 
 // Simplified web search graph - go directly to search with user's original query

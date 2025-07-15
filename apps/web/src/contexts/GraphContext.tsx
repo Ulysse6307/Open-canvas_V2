@@ -421,6 +421,13 @@ export function GraphProvider({ children }: { children: ReactNode }) {
             taskName,
           } = extractChunkFields(chunk);
 
+          // Debug logging for updateHighlightedText
+          if (langgraphNode === "updateHighlightedText") {
+            console.log("🔍 updateHighlightedText event:", event);
+            console.log("🔍 updateHighlightedText chunk:", chunk);
+            console.log("🔍 updateHighlightedText nodeOutput:", nodeOutput);
+          }
+
           if (!runId && runId_) {
             runId = runId_;
             setRunId(runId);
@@ -477,6 +484,9 @@ export function GraphProvider({ children }: { children: ReactNode }) {
           }
 
           if (event === "on_chat_model_stream") {
+            // Debug logging for streaming events
+            console.log("📡 on_chat_model_stream:", langgraphNode, nodeChunk);
+            
             // These are generating new messages to insert to the chat window.
             if (
               ["generateFollowup", "replyToGeneralInput"].includes(
@@ -1201,6 +1211,9 @@ export function GraphProvider({ children }: { children: ReactNode }) {
           }
 
           if (event === "on_chain_end") {
+            // Debug logging for chain end events
+            console.log("🏁 on_chain_end:", langgraphNode, nodeOutput);
+            
             if (
               langgraphNode === "rewriteArtifact" &&
               taskName === "optionally_update_artifact_meta"
@@ -1229,6 +1242,15 @@ export function GraphProvider({ children }: { children: ReactNode }) {
                   });
                 });
               });
+            }
+
+            if (langgraphNode === "updateHighlightedText") {
+              console.log("📝 updateHighlightedText completed, updating artifact");
+              const output = nodeOutput as { artifact: ArtifactV3 };
+              if (output.artifact) {
+                console.log("📝 Setting artifact:", output.artifact);
+                setArtifact(output.artifact);
+              }
             }
 
             if (

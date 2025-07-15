@@ -574,7 +574,6 @@ export const LANGCHAIN_USER_ONLY_MODELS = [
   "gemini-2.5-pro-preview-05-06",
   "claude-sonnet-4-0",
   "claude-opus-4-0",
-  "gpt-4.1",
 ];
 
 // Models which do NOT support the temperature parameter.
