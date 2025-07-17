@@ -25,14 +25,26 @@ import {
   isThinkingModel,
 } from "@opencanvas/shared/utils/thinking";
 
+import { REWRITE_OR_GENERATE_ARTIFACT_FROM_WEB_PROMPT } from "../../prompts.js";
+
 export const rewriteArtifact = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
   const { modelName } = getModelConfig(config);
-  const smallModelWithConfig = (await getModelFromConfig(config)).withConfig({
-    runName: "rewrite_artifact_model_call",
-  });
+
+  console.log("MODELLLLLE CONFIIIIIIG",getModelConfig(config));
+
+const baseModel = await getModelFromConfig(config);
+const modelWithTools = baseModel.bindTools([{ type: "web_search_preview" }]);
+const LLMconfig = modelWithTools.withConfig({ runName: "rewrite_artifact_model_call" });
+
+    
+
+  //const smallModelWithConfig = (await getModelFromConfig(config)).withConfig({
+    //runName: "rewrite_artifact_model_call",
+  //});
+
   const memoriesAsString = await getFormattedReflections(config);
   const { currentArtifactContent, recentHumanMessage } = validateState(state);
 
@@ -46,6 +58,8 @@ export const rewriteArtifact = async (
   const artifactContent = isArtifactMarkdownContent(currentArtifactContent)
     ? currentArtifactContent.fullMarkdown
     : currentArtifactContent.code;
+  
+
 
   const formattedPrompt = buildPrompt({
     artifactContent,
@@ -61,11 +75,29 @@ export const rewriteArtifact = async (
 
   const contextDocumentMessages = await createContextDocumentMessages(config);
   const isO1MiniModel = isUsingO1MiniModel(config);
-  const newArtifactResponse = await smallModelWithConfig.invoke([
+  let newArtifactResponse;
+    console.log("CE QUE PREND L4ARTIFCAT EN ENTREE", ...contextDocumentMessages,...state._messages);
+
+  if (state.webSearchRewriteArtifact) {
+    newArtifactResponse = await LLMconfig.invoke([
+    { role: isO1MiniModel ? "user" : "system", content: REWRITE_OR_GENERATE_ARTIFACT_FROM_WEB_PROMPT },
+    ...contextDocumentMessages,
+    ...state._messages,
+  ]);
+  }
+  else{
+    newArtifactResponse = await LLMconfig.invoke([
     { role: isO1MiniModel ? "user" : "system", content: fullSystemPrompt },
     ...contextDocumentMessages,
     recentHumanMessage,
   ]);
+  }
+  
+
+  console.log("EST CE QUE WEBSEARCH ENABLE", state.webSearchEnabled);
+  console.log("STATE WEBSEARCH REWRITE ARTIFACT AVANT RESET", state.webSearchRewriteArtifact);
+ 
+
 
   let thinkingMessage: AIMessage | undefined;
   let artifactContentText = newArtifactResponse.content as string;
@@ -87,6 +119,9 @@ export const rewriteArtifact = async (
     artifactMetaToolCall,
     newContent: artifactContentText as string,
   });
+
+  state.webSearchRewriteArtifact = false; // Reset the flag after use
+  console.log("STATE WEBSEARCH REWRITE ARTIFACT APRES RESET", state.webSearchRewriteArtifact);
 
   return {
     artifact: {

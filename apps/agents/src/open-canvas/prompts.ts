@@ -415,3 +415,23 @@ Rules and guidelines:
 - Ensure you do not port over language specific modules. E.g if the code contains imports from Node's fs module, you must use the closest equivalent in {newLanguage}.
 ${DEFAULT_CODE_PROMPT_RULES}
 </rules-guidelines>`;
+
+
+export const REWRITE_OR_GENERATE_ARTIFACT_FROM_WEB_PROMPT = `You are an expert AI assistant. Your task:
+
+1. From the conversation history (state._messages), locate the **last** message whose content contains these two markers:
+   ---START OF REQUIRED CONTENT---
+   (some text)
+   ---END OF REQUIRED CONTENT---
+
+2. Extract **only** the text between those two markers.
+
+3. Rewrite **only** that extracted text for improved clarity, style, and formatting—adjust headings, punctuation, and phrasing as needed—but **do not** change any factual or substantive content.
+
+4. You must rewrite the form of the text so it perfectly fits the Markdown format.
+
+5. Return **just** the rewritten text (omit the markers entirely). Do **not** include or mention the ---START OF REQUIRED CONTENT--- or ---END OF REQUIRED CONTENT--- lines, and do **not** output any other text or commentary.
+
+Your entire response should be the rewritten block by itself, with no additional prefixes, suffixes, or markers`;
+
+

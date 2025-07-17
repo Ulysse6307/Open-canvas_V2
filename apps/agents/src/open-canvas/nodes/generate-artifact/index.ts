@@ -15,6 +15,8 @@ import {
 import { ARTIFACT_TOOL_SCHEMA } from "./schemas.js";
 import { createArtifactContent, formatNewArtifactPrompt } from "./utils.js";
 import { z } from "zod";
+import { REWRITE_OR_GENERATE_ARTIFACT_FROM_WEB_PROMPT } from "../../prompts.js";
+
 
 /**
  * Generate a new artifact based on the user's query.
@@ -23,6 +25,7 @@ export const generateArtifact = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
+  
   const { modelName } = getModelConfig(config, {
     isToolCalling: true,
   });
@@ -57,7 +60,22 @@ export const generateArtifact = async (
 
   const contextDocumentMessages = await createContextDocumentMessages(config);
   const isO1MiniModel = isUsingO1MiniModel(config);
-  const response = await modelWithArtifactTool.invoke(
+
+  let response;
+
+  if (state.webSearchRewriteArtifact) {
+    response = await modelWithArtifactTool.invoke(
+    [
+      { role: isO1MiniModel ? "user" : "system", content: REWRITE_OR_GENERATE_ARTIFACT_FROM_WEB_PROMPT },
+      ...contextDocumentMessages,
+      ...state._messages,
+    ],
+    { runName: "generate_artifact" }
+  );
+
+  }
+  else{
+    response = await modelWithArtifactTool.invoke(
     [
       { role: isO1MiniModel ? "user" : "system", content: fullSystemPrompt },
       ...contextDocumentMessages,
@@ -65,6 +83,11 @@ export const generateArtifact = async (
     ],
     { runName: "generate_artifact" }
   );
+  }
+
+  state.webSearchRewriteArtifact = false; // Reset the web search rewrite artifact flag
+  console.log("VOICI AVEC QUOI UN NOUVEL ARTIFACT A ETE CREE", ...state._messages);
+
   const args = response.tool_calls?.[0].args as
     | z.infer<typeof ARTIFACT_TOOL_SCHEMA>
     | undefined;

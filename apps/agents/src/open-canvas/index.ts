@@ -98,10 +98,12 @@ function routePostWebSearch(
 
   return new Command({
     goto: includesArtifacts ? "rewriteArtifact" : "generateArtifact",
+    
     update: {
       webSearchEnabled: false,
       messages: [webSearchResultsMessage],
       _messages: [webSearchResultsMessage],
+      webSearchRewriteArtifact: true, // This is used to determine if the rewriteArtifact node should use the web search results.
     },
   });
 }
