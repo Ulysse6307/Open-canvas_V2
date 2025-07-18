@@ -54,14 +54,23 @@ export async function search(
           webSearchEnabled: state.webSearchEnabled,
         }));
 
-  console.log("MODELEEEEE", model);
-
-  console.log("Model configuration:", modelConfig);
-
-  console.log("WEB SEARCH QUERY :", query);
+ 
+  
 
 
-  const response = await model.invoke([["user", WEB_SEARCH_QUERY + "The query of the user is the following :" + query]]);
+  // Get the current artifact content if available
+  const currentArtifactContent = state.artifact?.contents?.find(
+    (c) => c.index === state.artifact?.currentIndex && c.type === "text"
+  )?.fullMarkdown || "";
+
+  console.log("CURRENT ARTIFACT CONTENT", currentArtifactContent)
+
+  // Build the enhanced prompt with artifact content
+  const enhancedPrompt = WEB_SEARCH_QUERY + 
+    (currentArtifactContent ? `\n\n=== CURRENT DOCUMENT CONTEXT (THE USER CAN NAME IT BY : OPEN-CANVAS, DOCUMENT ETC..., THIS IS WHAT YOU JUST WROTE) ===\n${currentArtifactContent}\n\n` : "") +
+    "The query of the user is the following: " + query;
+
+  const response = await model.invoke([{role: "system", content: enhancedPrompt}]);
 
   //console.log("O3 full response:", completion);
 

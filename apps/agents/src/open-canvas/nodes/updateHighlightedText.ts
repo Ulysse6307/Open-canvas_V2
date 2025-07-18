@@ -146,6 +146,11 @@ export const updateHighlightedText = async (
   }
 
   const { markdownBlock, selectedText, fullMarkdown } = state.highlightedText;
+  
+  // Validate that selectedText is not empty or just whitespace
+  if (!selectedText || !selectedText.trim()) {
+    throw new Error("Cannot update highlighted text: selected text is empty or contains only whitespace");
+  }
   const formattedPrompt = PROMPT.replace(
     "{highlightedText}",
     selectedText

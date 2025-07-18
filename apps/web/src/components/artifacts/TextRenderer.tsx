@@ -141,6 +141,12 @@ export function TextRendererComponent(props: TextRendererProps) {
     const selection = editor.getSelection();
 
     if (selectedText && selection) {
+      // Validate that selectedText is not empty or just whitespace
+      const cleanedSelectedText = cleanText(selectedText);
+      if (!cleanedSelectedText.trim()) {
+        return;
+      }
+
       if (!artifact) {
         console.error("Artifact not found");
         return;
@@ -167,7 +173,7 @@ export function TextRendererComponent(props: TextRendererProps) {
         setSelectedBlocks({
           fullMarkdown: cleanText(fullMarkdown),
           markdownBlock: cleanText(markdownBlock),
-          selectedText: cleanText(selectedText),
+          selectedText: cleanedSelectedText,
         });
       })();
     }

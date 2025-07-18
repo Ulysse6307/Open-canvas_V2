@@ -1,5 +1,5 @@
 import { Annotation, MessagesAnnotation } from "@langchain/langgraph";
-import { SearchResult } from "@opencanvas/shared/types";
+import { SearchResult, ArtifactV3 } from "@opencanvas/shared/types";
 
 export const WebSearchGraphAnnotation = Annotation.Root({
   /**
@@ -24,7 +24,10 @@ export const WebSearchGraphAnnotation = Annotation.Root({
    */
   userAnswer: Annotation<string>,
 
-  webSearchEnabled: Annotation<boolean>
+  webSearchEnabled: Annotation<boolean>,
+
+  artifact: Annotation<ArtifactV3>
+
 });
 
 export type WebSearchState = typeof WebSearchGraphAnnotation.State;

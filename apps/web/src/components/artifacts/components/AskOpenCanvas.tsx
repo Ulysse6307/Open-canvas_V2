@@ -44,6 +44,16 @@ export const AskOpenCanvas = forwardRef<HTMLDivElement, AskOpenCanvasProps>(
     ) => {
       e.preventDefault();
 
+      // Validate input is not empty
+      if (!inputValue.trim()) {
+        toast({
+          title: "Input required",
+          description: "Please enter a message before submitting.",
+          duration: 5000,
+        });
+        return;
+      }
+
       const artifactContent = props.artifact
         ? getArtifactContent(props.artifact)
         : undefined;

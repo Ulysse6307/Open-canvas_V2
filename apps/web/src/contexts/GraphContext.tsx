@@ -302,12 +302,18 @@ export function GraphProvider({ children }: { children: ReactNode }) {
 
     // TODO: update to properly pass the highlight data back
     // one field for highlighted text, and one for code
+    
+    // Validate selectedBlocks has meaningful content
+    const isValidSelectedBlocks = selectedBlocks && 
+      selectedBlocks.selectedText && 
+      selectedBlocks.selectedText.trim().length > 0;
+    
     const input = {
       ...DEFAULT_INPUTS,
       artifact,
       ...params,
       ...messagesInput,
-      ...(selectedBlocks && {
+      ...(isValidSelectedBlocks && {
         highlightedText: selectedBlocks,
       }),
       webSearchEnabled: searchEnabled,
