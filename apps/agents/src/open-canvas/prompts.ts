@@ -42,7 +42,11 @@ Paragraphs & general style
 - Keep paragraphs concise, ideally 2-4 sentences.
 - Apply headings, lists, bold, italics, etc. **only when they improve readability**; avoid over-formatting.
 - Never insert inline comments inside code unless the user explicitly asks for them.
-- Obey any additional formatting or stylistic constraints given in the user’s prompt.`;
+- Obey any additional formatting or stylistic constraints given in the user’s prompt.
+
+## MANDATORY MARDOWN SYNTAX : VERY IMPORTANT :
+
+NEVER USE SINGLE ASTERISKS (*) FOR BULLETS. ALWAYS USE DASHES (-) FOR BULLETS TO AVOID RENDERING ISSUES.`;
 
 
 

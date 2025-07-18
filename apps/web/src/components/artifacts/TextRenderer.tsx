@@ -20,7 +20,65 @@ import { Textarea } from "../ui/textarea";
 import { cn } from "@/lib/utils";
 
 const cleanText = (text: string) => {
-  return text.replaceAll("\\\n", "\n");
+  return text
+    .replaceAll("\\\n", "\n")
+    // Fix list formatting issues that can confuse BlockNote
+    .replace(/^\s*\*\s{2,}/gm, '* ')  // Fix asterisk lists with multiple spaces
+    .replace(/^\s*-\s{2,}/gm, '- ')   // Fix dash lists with multiple spaces
+    .replace(/^\s*\*\s+/gm, '* ')     // Normalize asterisk lists
+    .replace(/^\s*-\s+/gm, '- ')      // Normalize dash lists
+    .replace(/^\s*(\d+)\.\s{2,}/gm, '$1. ') // Fix numbered lists with multiple spaces
+    .replace(/^\s*(\d+)\.\s+/gm, '$1. ')    // Normalize numbered lists
+    .replace(/\n\s*\n\s*\*/gm, '\n\n*') // Fix spacing before list items
+    .replace(/\n\s*\n\s*-/gm, '\n\n-') // Fix spacing before dash list items
+    .replace(/\n\s*\n\s*(\d+)\./gm, '\n\n$1.'); // Fix spacing before numbered list items
+};
+
+// Function to flatten nested bulletListItem and numberedListItem structures
+const flattenListBlocks = (blocks: any[]): any[] => {
+  const flattenedBlocks: any[] = [];
+  let numberedListCounter = 1;
+  
+  for (const block of blocks) {
+    if (block.type === 'bulletListItem' || block.type === 'numberedListItem') {
+      // Add the current list item
+      flattenedBlocks.push({
+        ...block,
+        children: [] // Remove nested children
+      });
+      
+      // Recursively flatten any nested list items in children
+      if (block.children && block.children.length > 0) {
+        for (const child of block.children) {
+          if (child.type === 'bulletListItem' || child.type === 'numberedListItem') {
+            // Add nested list items as top-level items
+            flattenedBlocks.push(...flattenListBlocks([child]));
+          } else if (child.type === 'paragraph' && child.content) {
+            // Convert paragraph content to a new list item
+            flattenedBlocks.push({
+              id: `flattened-${Date.now()}-${Math.random()}`,
+              type: block.type, // Keep the same list type as parent
+              props: {
+                textColor: 'default',
+                backgroundColor: 'default',
+                textAlignment: 'left'
+              },
+              content: child.content,
+              children: []
+            });
+          }
+        }
+      }
+    } else {
+      // For non-list items, keep as is but recursively process children
+      flattenedBlocks.push({
+        ...block,
+        children: block.children ? flattenListBlocks(block.children) : []
+      });
+    }
+  }
+  
+  return flattenedBlocks;
 };
 
 function ViewRawText({
@@ -134,6 +192,7 @@ export function TextRendererComponent(props: TextRendererProps) {
     }
 
     try {
+      console.log("TOUT l'ARTIFACT", artifact);
       const currentIndex = artifact.currentIndex;
       const currentContent = artifact.contents.find(
         (c) => c.index === currentIndex && c.type === "text"
@@ -142,10 +201,19 @@ export function TextRendererComponent(props: TextRendererProps) {
 
       // Blocks are not found in the artifact, so once streaming is done we should update the artifact state with the blocks
       (async () => {
+        console.log("🔍 RAW MARKDOWN:", currentContent.fullMarkdown);
+        const cleanedMarkdown = cleanText(currentContent.fullMarkdown);
+        console.log("🔍 CLEANED MARKDOWN:", cleanedMarkdown);
         const markdownAsBlocks = await editor.tryParseMarkdownToBlocks(
-          currentContent.fullMarkdown
+          cleanedMarkdown
         );
-        editor.replaceBlocks(editor.document, markdownAsBlocks);
+        console.log("🔍 MARKDOWN AS BLOCKS (BEFORE FLATTEN):", markdownAsBlocks);
+        
+        // Flatten nested list structures
+        const flattenedBlocks = flattenListBlocks(markdownAsBlocks);
+        console.log("🔍 FLATTENED BLOCKS:", flattenedBlocks);
+        
+        editor.replaceBlocks(editor.document, flattenedBlocks);
         setUpdateRenderedArtifactRequired(false);
         setManuallyUpdatingArtifact(false);
       })();
@@ -163,7 +231,7 @@ export function TextRendererComponent(props: TextRendererProps) {
         (async () => {
           setManuallyUpdatingArtifact(true);
           const markdownAsBlocks =
-            await editor.tryParseMarkdownToBlocks(rawMarkdown);
+            await editor.tryParseMarkdownToBlocks(cleanText(rawMarkdown));
           editor.replaceBlocks(editor.document, markdownAsBlocks);
           setManuallyUpdatingArtifact(false);
         })();

@@ -410,7 +410,18 @@ export async function getModelFromConfig(
 
   // Add web search tools if enabled and model supports it
   if (extra?.webSearchEnabled && modelProvider === "openai") {
-    const webSearchTool = {"type": "web_search_preview"};
+    const webSearchTool = {
+    type: "web_search_preview",
+    // Définit la localisation approximative
+    user_location: {
+      type: "approximate",
+      city: "Paris",
+      region: "Île‑de‑France",
+      country: "FR",
+    },
+    // Optionnel : contrôle la quantité de contexte récupéré
+    search_context_size: "medium"
+  };
     return model.bindTools([webSearchTool]);
   }
 

@@ -33,12 +33,12 @@ export const rewriteArtifact = async (
 ): Promise<OpenCanvasGraphReturnType> => {
   const { modelName } = getModelConfig(config);
 
-  console.log("MODELLLLLE CONFIIIIIIG",getModelConfig(config));
+  const smallModel2 = await getModelFromConfig(config, {
+      temperature: 0.5,
+      isToolCalling: true,
+    })
 
-const baseModel = await getModelFromConfig(config);
-const modelWithTools = baseModel.bindTools([{ type: "web_search_preview" }]);
-const LLMconfig = modelWithTools.withConfig({ runName: "rewrite_artifact_model_call" });
-
+  const LLMconfig =smallModel2.withConfig({runName: "rewrite_artifact_model_call",});
     
 
   //const smallModelWithConfig = (await getModelFromConfig(config)).withConfig({
@@ -76,7 +76,6 @@ const LLMconfig = modelWithTools.withConfig({ runName: "rewrite_artifact_model_c
   const contextDocumentMessages = await createContextDocumentMessages(config);
   const isO1MiniModel = isUsingO1MiniModel(config);
   let newArtifactResponse;
-    console.log("CE QUE PREND L4ARTIFCAT EN ENTREE", ...contextDocumentMessages,...state._messages);
 
   if (state.webSearchRewriteArtifact) {
     newArtifactResponse = await LLMconfig.invoke([
@@ -92,7 +91,8 @@ const LLMconfig = modelWithTools.withConfig({ runName: "rewrite_artifact_model_c
     recentHumanMessage,
   ]);
   }
-  
+
+  console.log("NEW ARTIFACT RESPONSE", newArtifactResponse);
 
   console.log("EST CE QUE WEBSEARCH ENABLE", state.webSearchEnabled);
   console.log("STATE WEBSEARCH REWRITE ARTIFACT AVANT RESET", state.webSearchRewriteArtifact);

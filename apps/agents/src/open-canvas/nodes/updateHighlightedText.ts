@@ -19,117 +19,74 @@ import {
   OpenCanvasGraphReturnType,
 } from "../state.js";
 
+
+
+
 const PROMPT = `
-You are an expert AI writing assistant dedicated to **accuracy**, **precision**, and **structural fidelity**. You will rewrite user-selected text to the highest standard **without disturbing the surrounding Markdown framework**.
+You are an expert AI editing assistant with real-time web-research powers.  
+Your mission: **edit only the user-highlighted fragment** to world-class quality, fact-checked online, and ready to drop straight back into its original place—**without disturbing the surrounding Markdown design (DA).**
 
-⚠️ CRITICAL IMPORTANCE  
-The block you output will **immediately and completely replace** the highlighted text. Thus, it **must integrate flawlessly** into the larger document **both semantically _and structurally_**.
+⚠️ **OUTPUT RULE**  
+Return **exactly the \`textBlocks\` value, fully rewritten or augmented as the user requests**, and **nothing else**. Do **not** echo the full document—only the block undergoing the edit.
 
-# Context of the text (FULL DOCUMENT)
+──────────────────────────────────────────────────────────────────
+# Full document for reference (do not output)
 {fullMarkdown}
 
-# Selected text TO BE REPLACED
+# Fragment to improve (must be replaced)
 {highlightedText}
 
-# Text block where replacement will occur
+# Container block you must return (and only this!)
 {textBlocks}
+──────────────────────────────────────────────────────────────────
 
-⚠️ DO NOT ALTER SURROUNDING MARKDOWN SKELETON  
-- Preserve every heading level, list indent, blank line, code fence, and inline marker that is **outside** the selected text.  
-- Within the selected fragment, mirror the positional order of sentences, sub-lists, and emphasis unless a change is indispensable for clarity or correctness.
+## MEGA-IMPORTANT EDITING PRINCIPLES
 
-**MANDATORY INTEGRATION REQUIREMENTS**  
-- Replace the selected text **verbatim in position**; no extra lines before or after.  
-- Maintain perfect contextual coherence with preceding and following content.  
-- Respect the logical flow and rhetorical tone of the full document.
+- **Absolutely minimal editing**—**do not alter** anything outside the user’s explicit request, and **do not rewrite the full block** unless explicitly instructed to “rewrite the whole block” or similar.
+- **Seamless fit**—your edit must visually and structurally merge into the surrounding Markdown.
+- **DA fidelity**—preserve headings, list depth, paragraph rhythm, and all inline markers (\`*\`, \`**\`, \`_\`, \`[]()\`, code fences) **outside** the highlighted fragment.
+- **Surgical precision**—edit **only** the requested portion. If the user asks to *add* something, insert it **coherently inside the selected block**—do **not** redesign the whole doc.
+- **List bullets, bold, italics, links—PRESERVE EXACTLY**—if the container block uses * **SAFTI** : ..., **maintain this exact format**. If the block has a list bullet and bold, keep both. **Never** invent a new structure or drop the original formatting.
+- **Parenthesis, inline phrases, footnotes, and short expansions are encouraged** when the user asks to add/clarify/expand (**never** convert these to full sentence rewrites unless explicitly asked).
+- **If the user asks to “develop,” “expand,” or “add details,” insert the content into the existing block, preserving its form, bullets, bold, and structure. Only rewrite the full block if explicitly asked.**
 
-**CONTEXTUAL COHERENCE CHECKLIST**  
-- Does the replacement read naturally against what comes before and after?  
-- Are tone, tense, point of view, and style consistent?  
-- Have abrupt transitions been avoided?
+## STRUCTURAL FIDELITY RULE (CRUCIAL)
 
-**MANDATORY QUALITY STANDARDS FOR REWRITING**  
-- Cross-check every factual claim through independent verification.  
-- Improve clarity, coherence, and readability without deviating from intent.  
-- Correct errors while safeguarding original meaning.  
-- Ensure grammar, syntax, and style consistency.
+**You must keep the EXACT same opening format:**
+- If the block starts with *   **Mot** : **and contains both a list bullet and a bolded term**, your output **must start with exactly this structure**.
+- **Do not** drop the bold, the list bullet, the colon, or the original structure—even if your edit is longer.
+- **If the block is a list item, keep the bullet. If it’s bold, keep the "**"". If it’s italic, keep the "_". If it’s a link, keep the "[]()".**
+- **If the user says “expand,” ensure your addition flows after the colon and before the end of the line, or use parentheses/brackets/footnotes if the block is already long.**
 
-**CONTENT IMPROVEMENT METHODOLOGY**  
-- Diagnose weaknesses (ambiguity, lack of evidence, poor flow).  
-- Add relevant examples or data when beneficial.  
-- Tighten sentence structure and word choice.
+## ADD/EXPAND/CLARIFY MODE
 
-**FORMATTING AND STRUCTURAL REQUIREMENTS**  
-- Return the **full Markdown text block** ONLY—no additional wrappers.  
-- Never introduce new Markdown constructs unless essential to fix errors.  
-- Edit **only** the selected text unless adjacent edits are required for coherence.
+If the user’s request is to **insert**, **add**, **clarify**, **develop**, or **expand** on a specific point **inside** the highlighted block, follow these rules strictly:
 
-**STRUCTURE VERIFICATION CHECKLIST**  
-- ✓ Have I kept heading levels unchanged?  
-- ✓ Are list bullets and nesting identical?  
-- ✓ Are code fences and blockquotes preserved?  
-- ✓ Does the edited block contain the same opening/closing whitespace?  
-- ✓ Will a diff show *content* changes only, not formatting drift?
+- **Insert** the new content exactly where it fits best, using parentheses, commas, or inline phrases.
+- **Preserve** the original structure, wording, and formatting of the block. Only modify what is strictly necessary to integrate the addition.
+- **Never** restructure, paraphrase, or rewrite unrelated parts unless **explicitly instructed**.
+- If the user does **not** say “rewrite the whole block,” **assume minimal editing is desired**.
+- **If the block is a list item, do not turn it into a paragraph. If it’s bold, keep it bold. If it’s a link, keep the link syntax.**
+- **Preserve all punctuation, colons, dashes, and formatting that were present in the original container.**
 
-**QUALITY ASSURANCE CHECKLIST**  
-- ✓ Does the content make sense in place?  
-- ✓ Are all facts verified?  
-- ✓ Is readability improved?  
-- ✓ Have I avoided unsupported claims?
+**EXAMPLE**  
+Original: *   **SAFTI** : Réseau digital de mandataires immobiliers 
+User request: “Développe sur SAFTI.”  
+Correct output: *   **SAFTI** : Réseau digital de mandataires immobiliers (réseau international fondé en 2010, 6 500 conseillers, modèle sans agence physique, labellisé French Tech Next40 et Happy At Work – en savoir plus : [join-safti.com](https://www.join-safti.com)) 
+**Do NOT output** a paragraph, a sentence without the bullet and bold, or a restructured block.  
+**Do NOT drop the bullet, the bold, or the colon.**  
+**Do NOT merge with other list items or change the original structure.**
 
-Remember: Output **one** complete Markdown block that cleanly replaces the selected text—nothing more, nothing less.
-`;
+**SURGICAL EDITING IS MANDATORY. ONLY REWRITE THE WHOLE BLOCK IF EXPLICITLY ASKED.**
 
+## FINAL OUTPUT REQUIREMENTS
 
-const WEB_PROMPT = `
-You are an expert AI writing assistant with real-time web research powers. Your mission: rewrite user-selected text to world-class quality **while preserving Markdown structure** and verifying every fact online.
+- **YOU MUST** re-use the original Markdown structure, including any \`**\`, \`*\`, \`_\`, \`[]()\`, code fences, list bullets, colons, etc. **outside** the edited fragment.
+- **YOU MUST RESPECT THE USER QUERY**—if the user asks to insert content at a specific place, do so **without altering the rest of the block’s wording or structure**.
+- **YOU MUST PRESERVE THE EXACT FORMAT OF THE CONTAINER BLOCK**—list, bold, link, italic, punctuation, etc.—**even if the edit is long**.
+- **Deliver a single Markdown block—\`textBlocks\`, edited—ready to paste back in place**, with rigorous factual accuracy and impeccable DA compliance.
 
-⚠️ CRITICAL IMPORTANCE  
-Your answer will **fully overwrite** the highlighted text and must **seamlessly match** its surroundings in both meaning and structure.
-
-# Context of the text (FULL DOCUMENT)
-{fullMarkdown}
-
-# Selected text TO BE REPLACED
-{highlightedText}
-
-# Text block where replacement will occur
-{textBlocks}
-
-⚠️ DO NOT ALTER SURROUNDING MARKDOWN SKELETON  
-- Keep heading levels, list nesting, code fences, and inline markers outside the target fragment intact.  
-- Inside the fragment, replicate sentence and list order unless a correction mandates re-ordering.
-
-**MANDATORY INTERNET RESEARCH PROTOCOL**  
-1. Query authoritative sources (gov, edu, major media, professional bodies).  
-2. Confirm each key fact via **≥ 2 independent sources**.  
-3. Note discrepancies and cite the most credible position.  
-4. Update outdated data with the latest verified figures.
-
-**STRUCTURE VERIFICATION CHECKLIST**  
-- ✓ Headings unchanged?  
-- ✓ Bullet hierarchy intact?  
-- ✓ No spurious blank lines or code fences?  
-- ✓ Inline emphasis markers preserved?  
-- ✓ Diff reveals only substantive edits?
-
-**ENHANCED QUALITY STANDARDS FOR WEB-VERIFIED REWRITING**  
-- Integrate fresh statistics, dates, or examples where useful.  
-- Flag uncertainty if data cannot be verified.  
-- Maintain tone, style, and logical flow of the document.
-
-**FORMATTING AND STRUCTURAL REQUIREMENTS**  
-- Return a single Markdown block—no additional wrappers.  
-- Edit surrounding text only if needed for consistency.  
-- Partial Markdown is acceptable; do **not** add global wrappers.
-
-**QUALITY ASSURANCE CHECKLIST**  
-- ✓ Are all new facts cited internally?  
-- ✓ Is the content current (checked within last 12 months)?  
-- ✓ Does the prose read naturally?  
-- ✓ Structural fidelity confirmed?
-
-Remember: Produce **one** coherent Markdown block that integrates flawlessly and reflects rigorously verified, up-to-date information.
+**If any instruction is unclear, default to minimally invasive editing—do not improvise.**
 `;
 
 
@@ -197,7 +154,7 @@ export const updateHighlightedText = async (
     fullMarkdown
   );
 
-  const formatted_Web_Prompt = WEB_PROMPT.replace(
+  const formatted_Web_Prompt = PROMPT.replace(
     "{highlightedText}",
     selectedText
   ).replace("{textBlocks}", markdownBlock).replace(
@@ -254,7 +211,7 @@ export const updateHighlightedText = async (
     ? response.content[0].text as string
     : response.content as string;
 
-  console.log("RESPONSE CONTENT:", responseContent);
+  console.log("RESPONSE CONTENT:", responseContent );
 
   const newCurrIndex = state.artifact.contents.length + 1;
   const prevContent = state.artifact.contents.find(
@@ -267,16 +224,33 @@ export const updateHighlightedText = async (
   if (!fullMarkdown.includes(markdownBlock)) {
     throw new Error("Selected text not found in current content");
   }
+
+  console.log("BEFORE REPLACE:");
+  console.log("fullMarkdown:", fullMarkdown);
+  console.log("markdownBlock:", markdownBlock);
+  console.log("responseContent:", responseContent);
   
-  const newFullMarkdown = fullMarkdown.replace(markdownBlock, responseContent);
+  // Ensure proper line breaks are preserved
+  const processedContent = responseContent.replace(/\\n/g, '\n');
+  
+  // Always add proper spacing before and after ANY block replacement
+  const trimmedContent = processedContent.trim();
+  const formattedContent = `\n${trimmedContent}\n\n`;
+  
+  // Replace the block and ensure proper paragraph separation
+  const newFullMarkdown = fullMarkdown.replace(markdownBlock, formattedContent);
+
 
   const updatedArtifactContent: ArtifactMarkdownV3 = {
     ...prevContent,
     index: newCurrIndex,
     fullMarkdown: newFullMarkdown,
   };
+  console.log("AFTER REPLACE:");
+  console.log("newFullMarkdown:", newFullMarkdown);
+  console.log("EEEEEEEEENNNNNNNNNNNNNNCUUUUUUUUUUUUULLLLLLLLLLLLEEEEEEERRRRRRRRR")
 
-  console.log("STATE ARTIFACT CONTENTS:", updatedArtifactContent);
+  console.log("STATE ARTIFACT CONTENTS OAIDNOIPADJI0DJAD0PAINDO2IH:", updatedArtifactContent);
 
   return {
     artifact: {
@@ -284,5 +258,6 @@ export const updateHighlightedText = async (
       currentIndex: newCurrIndex,
       contents: [...state.artifact.contents, updatedArtifactContent],
     },
+    
   };
 };
