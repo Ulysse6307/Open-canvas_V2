@@ -3,7 +3,6 @@ import { graph } from "@opencanvas/agents/dist/open-canvas/index";
 import { evaluate, EvaluationResult } from "langsmith/evaluation";
 import "dotenv/config";
 
-console.log("Début de l’évaluation")
 
 const runGraph = async (
   input: Record<string, any>

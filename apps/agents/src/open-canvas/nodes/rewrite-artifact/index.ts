@@ -92,12 +92,6 @@ export const rewriteArtifact = async (
   ]);
   }
 
-  console.log("NEW ARTIFACT RESPONSE", newArtifactResponse);
-
-  console.log("EST CE QUE WEBSEARCH ENABLE", state.webSearchEnabled);
-  console.log("STATE WEBSEARCH REWRITE ARTIFACT AVANT RESET", state.webSearchRewriteArtifact);
- 
-
 
   let thinkingMessage: AIMessage | undefined;
   let artifactContentText = newArtifactResponse.content as string;
@@ -121,7 +115,6 @@ export const rewriteArtifact = async (
   });
 
   state.webSearchRewriteArtifact = false; // Reset the flag after use
-  console.log("STATE WEBSEARCH REWRITE ARTIFACT APRES RESET", state.webSearchRewriteArtifact);
 
   return {
     artifact: {

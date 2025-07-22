@@ -39,6 +39,7 @@ export interface ThreadProps {
     type: "text" | "code",
     language?: ProgrammingLanguageOptions
   ) => void;
+  handleFileImport?: (file: File) => void;
   setChatStarted: Dispatch<SetStateAction<boolean>>;
   switchSelectedThreadCallback: (thread: ThreadType) => void;
   searchEnabled: boolean;
@@ -50,6 +51,7 @@ export const Thread: FC<ThreadProps> = (props: ThreadProps) => {
     setChatStarted,
     hasChatStarted,
     handleQuickStart,
+    handleFileImport,
     switchSelectedThreadCallback,
   } = props;
   const { toast } = useToast();
@@ -141,6 +143,7 @@ export const Thread: FC<ThreadProps> = (props: ThreadProps) => {
         {!hasChatStarted && (
           <ThreadWelcome
             handleQuickStart={handleQuickStart}
+            handleFileImport={handleFileImport}
             composer={
               <Composer
                 chatStarted={false}

@@ -40,8 +40,8 @@
   --color-border-default: #d0d7de;
   --color-border-muted: #d8dee4;
   --color-neutral-muted: rgba(175, 184, 193, 0.2);
-  --color-accent-fg: #0969da;
-  --color-accent-emphasis: #0969da;
+  --color-accent-fg: #0000EE;
+  --color-accent-emphasis: #0000EE;
   --color-attention-subtle: #fff8c5;
   --color-danger-fg: #cf222e;
 }
@@ -49,10 +49,260 @@
 .lightModeOnly :global(.wmde-markdown),
 .lightModeOnly :global(.wmde-markdown-var) {
   background-color: #ffffff;
-  color: #24292f;
+  color: #000000;
+  font-family: "Cambria", "Times New Roman", Times, serif;
+  font-size: 17.75pt;
+  line-height: normal;
+  text-align: justify;
 }
 
 .lightModeOnly :global(.w-md-editor-text-pre > code),
 .lightModeOnly :global(.w-md-editor-text-input) {
-  color: #24292f !important;
+  color: #000000 !important;
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 17.75pt !important;
+  line-height: normal !important;
+}
+
+/* Additional Arial styling for markdown elements */
+.lightModeOnly :global(.wmde-markdown h1) {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 23.66pt !important;
+  font-weight: bold !important;
+  color: #000000 !important;
+  margin-bottom: 7pt !important;
+  margin-top: 7pt !important;
+  text-align: justify !important;
+}
+
+.lightModeOnly :global(.wmde-markdown h2),
+.lightModeOnly :global(.wmde-markdown h3),
+.lightModeOnly :global(.wmde-markdown h4),
+.lightModeOnly :global(.wmde-markdown h5),
+.lightModeOnly :global(.wmde-markdown h6) {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 18.59pt !important;
+  font-weight: bold !important;
+  color: #000000 !important;
+  margin-bottom: 7pt !important;
+  margin-top: 7pt !important;
+  text-align: justify !important;
+}
+
+.lightModeOnly :global(.wmde-markdown p) {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 17.75pt !important;
+  color: #000000 !important;
+  text-align: justify !important;
+  margin-bottom: 7pt !important;
+}
+
+.lightModeOnly :global(.wmde-markdown li) {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 17.75pt !important;
+  color: #000000 !important;
+  text-align: justify !important;
+  margin-bottom: 0pt !important;
+  margin-top: 0pt !important;
+  line-height: 1 !important;
+  padding: 0pt !important;
+}
+
+.lightModeOnly :global(.wmde-markdown ul),
+.lightModeOnly :global(.wmde-markdown ol) {
+  padding-left: 20pt !important;
+  margin-left: 0pt !important;
+  margin-bottom: 0pt !important;
+  margin-top: 0pt !important;
+  line-height: 1 !important;
+}
+
+.lightModeOnly :global(.wmde-markdown ul li),
+.lightModeOnly :global(.wmde-markdown ol li) {
+  margin: 0pt !important;
+  padding: 0pt !important;
+  line-height: 1 !important;
+}
+
+.lightModeOnly :global(.ProseMirror ul),
+.lightModeOnly :global(.ProseMirror ol) {
+  padding-left: 20pt !important;
+  margin-left: 0pt !important;
+  margin-bottom: 0pt !important;
+  margin-top: 0pt !important;
+  line-height: 1 !important;
+}
+
+.lightModeOnly :global(.ProseMirror ul li),
+.lightModeOnly :global(.ProseMirror ol li) {
+  margin: 0pt !important;
+  padding: 0pt !important;
+  line-height: 1 !important;
+}
+
+/* Règles supplémentaires pour s'assurer que tous les éléments de liste sont ciblés */
+.lightModeOnly :global(ul li),
+.lightModeOnly :global(ol li) {
+  margin: 0pt !important;
+  padding: 0pt !important;
+  line-height: 1 !important;
+  margin-block-start: 0pt !important;
+  margin-block-end: 0pt !important;
+  margin-inline-start: 0pt !important;
+  margin-inline-end: 0pt !important;
+}
+
+.lightModeOnly :global(ul),
+.lightModeOnly :global(ol) {
+  margin: 0pt !important;
+  padding-left: 20pt !important;
+  padding-right: 0pt !important;
+  padding-top: 0pt !important;
+  padding-bottom: 0pt !important;
+  line-height: 1 !important;
+  margin-block-start: 0pt !important;
+  margin-block-end: 0pt !important;
+}
+
+/* BlockNote specific selectors */
+.lightModeOnly :global(.custom-blocknote-theme ul),
+.lightModeOnly :global(.custom-blocknote-theme ol) {
+  margin: 0pt !important;
+  padding-left: 20pt !important;
+  padding-right: 0pt !important;
+  padding-top: 0pt !important;
+  padding-bottom: 0pt !important;
+  line-height: 1 !important;
+  margin-block-start: 0pt !important;
+  margin-block-end: 0pt !important;
+}
+
+.lightModeOnly :global(.custom-blocknote-theme ul li),
+.lightModeOnly :global(.custom-blocknote-theme ol li) {
+  margin: 0pt !important;
+  padding: 0pt !important;
+  line-height: 1 !important;
+  margin-block-start: 0pt !important;
+  margin-block-end: 0pt !important;
+  margin-inline-start: 0pt !important;
+  margin-inline-end: 0pt !important;
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 17.75pt !important;
+  color: #000000 !important;
+  text-align: justify !important;
+}
+
+.lightModeOnly :global(.bn-container ul),
+.lightModeOnly :global(.bn-container ol) {
+  margin: 0pt !important;
+  padding-left: 20pt !important;
+  line-height: 1 !important;
+}
+
+.lightModeOnly :global(.bn-editor ul li),
+.lightModeOnly :global(.bn-editor ol li) {
+  margin: 0pt !important;
+  padding: 0pt !important;
+  line-height: 1 !important;
+  margin-block-start: 0pt !important;
+  margin-block-end: 0pt !important;
+}
+
+.lightModeOnly :global(.wmde-markdown a) {
+  color: #0000EE !important;
+  text-decoration: underline !important;
+}
+
+.lightModeOnly :global(.wmde-markdown a:hover) {
+  color: #551A8B !important;
+}
+
+.lightModeOnly :global(.wmde-markdown blockquote) {
+  margin-left: 40pt !important;
+  margin-right: 40pt !important;
+  padding-left: 10pt !important;
+  border-left: 2pt solid #CCCCCC !important;
+  font-style: italic !important;
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+}
+
+/* BlockNote specific styling for Arial font */
+.lightModeOnly :global(.bn-container) {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 17.75pt !important;
+  line-height: normal !important;
+  color: #000000 !important;
+}
+
+.lightModeOnly :global(.bn-editor) {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 17.75pt !important;
+  color: #000000 !important;
+  background-color: #ffffff !important;
+}
+
+.lightModeOnly :global(.ProseMirror) {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 17.75pt !important;
+  line-height: normal !important;
+  color: #000000 !important;
+  text-align: justify !important;
+}
+
+.lightModeOnly :global(.ProseMirror h1) {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 23.66pt !important;
+  font-weight: bold !important;
+  color: #000000 !important;
+  margin-top: 20pt !important;
+  margin-bottom: 26pt !important;
+  text-align: justify !important;
+}
+
+.lightModeOnly :global(.ProseMirror h2),
+.lightModeOnly :global(.ProseMirror h3),
+.lightModeOnly :global(.ProseMirror h4),
+.lightModeOnly :global(.ProseMirror h5),
+.lightModeOnly :global(.ProseMirror h6) {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 18.59pt !important;
+  font-weight: bold !important;
+  color: #000000 !important;
+  margin-bottom: 14pt !important;
+  margin-top: 14pt !important;
+  text-align: justify !important;
+}
+
+.lightModeOnly :global(.ProseMirror p) {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 17.75pt !important;
+  color: #000000 !important;
+  text-align: justify !important;
+  margin-bottom: 14pt !important;
+}
+
+.lightModeOnly :global(.ProseMirror li) {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 17.75pt !important;
+  color: #000000 !important;
+  text-align: justify !important;
+  margin-bottom: 0pt !important;
+  margin-top: 0pt !important;
+  line-height: 1 !important;
+  padding: 0pt !important;
+}
+
+/* Ensure bold text is selectable */
+.lightModeOnly :global(.ProseMirror strong),
+.lightModeOnly :global(.ProseMirror b),
+.lightModeOnly :global(.bn-editor strong),
+.lightModeOnly :global(.bn-editor b),
+.lightModeOnly :global(.custom-blocknote-theme strong),
+.lightModeOnly :global(.custom-blocknote-theme b) {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  pointer-events: auto !important;
+  cursor: text !important;
 }

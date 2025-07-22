@@ -86,7 +86,6 @@ export const generateArtifact = async (
   }
 
   state.webSearchRewriteArtifact = false; // Reset the web search rewrite artifact flag
-  console.log("VOICI AVEC QUOI UN NOUVEL ARTIFACT A ETE CREE", ...state._messages);
 
   const args = response.tool_calls?.[0].args as
     | z.infer<typeof ARTIFACT_TOOL_SCHEMA>

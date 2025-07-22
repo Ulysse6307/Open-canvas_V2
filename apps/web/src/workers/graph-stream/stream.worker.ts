@@ -9,12 +9,7 @@ ctx.addEventListener("message", async (event: MessageEvent<StreamConfig>) => {
     const { threadId, assistantId, input, modelName, modelConfigs } =
       event.data;
 
-
-    console.log("Toutes les informations",event.data);
-
     const client = createClient();
-
-    console.log("Informations_données", event.data);
 
     const stream = client.runs.stream(threadId, assistantId, {
       input: input as Record<string, unknown>,

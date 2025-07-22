@@ -42,6 +42,7 @@ export interface ContentComposerChatInterfaceProps {
     type: "text" | "code",
     language?: ProgrammingLanguageOptions
   ) => void;
+  handleFileImport?: (file: File) => void;
   chatCollapsed: boolean;
   setChatCollapsed: (c: boolean) => void;
 }
@@ -156,6 +157,7 @@ export function ContentComposerChatInterfaceComponent(
           userId={userData?.user?.id}
           setChatStarted={props.setChatStarted}
           handleQuickStart={props.handleQuickStart}
+          handleFileImport={props.handleFileImport}
           hasChatStarted={props.hasChatStarted}
           switchSelectedThreadCallback={props.switchSelectedThreadCallback}
           searchEnabled={searchEnabled}

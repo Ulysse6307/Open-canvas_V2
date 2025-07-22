@@ -62,7 +62,6 @@ export async function generatePath(
     };
   }
 
-  console.log("STATE HIGHLIGHTED TEXT", state.highlightedText);
 
 
   if (state.highlightedText) {

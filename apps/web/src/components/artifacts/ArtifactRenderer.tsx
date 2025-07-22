@@ -65,11 +65,22 @@ function ArtifactRendererComponent(props: ArtifactRendererProps) {
   const [isHoveringOverArtifact, setIsHoveringOverArtifact] = useState(false);
   const [isValidSelectionOrigin, setIsValidSelectionOrigin] = useState(false);
 
-  const handleMouseUp = useCallback(() => {
+  const handleMouseUp = useCallback((e: MouseEvent) => {
+    // Only handle selection if Ctrl/Cmd key is NOT pressed (to allow normal copying)
+    if (e.ctrlKey || e.metaKey) {
+      return; // Let browser handle normal copy operations
+    }
+
     const selection = window.getSelection();
     if (selection && selection.rangeCount > 0 && contentRef.current) {
       const range = selection.getRangeAt(0);
       const selectedText = range.toString().trim();
+
+      // Only trigger custom selection if text is longer than a few characters
+      // This allows normal copying of short selections like bold text
+      if (selectedText.length < 10) {
+        return; // Let browser handle short selections normally
+      }
 
       // Check if the selection originated from within the artifact content
       if (selectedText && artifactContentRef.current) {
@@ -257,23 +268,6 @@ function ArtifactRendererComponent(props: ArtifactRendererProps) {
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      // Check if we're in an input/textarea element
-      const activeElement = document.activeElement;
-      const isInputActive =
-        activeElement instanceof HTMLInputElement ||
-        activeElement instanceof HTMLTextAreaElement;
-
-      // If selection states are active and we're not in an input field
-      if (
-        (isInputVisible || selectionBox || isSelectionActive) &&
-        !isInputActive
-      ) {
-        // Check if the key is a character key or backspace/delete
-        if (e.key.length === 1 || e.key === "Backspace" || e.key === "Delete") {
-          handleCleanupState();
-        }
-      }
-
       // Handle escape key for input box
       if ((isInputVisible || isSelectionActive) && e.key === "Escape") {
         handleCleanupState();

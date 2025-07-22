@@ -22,7 +22,7 @@ import {
 
 
 
-const PROMPT = `
+const PROMPT2 = `
 You are an expert AI editing assistant with real-time web-research powers.  
 Your mission: **edit only the user-highlighted fragment** to world-class quality, fact-checked online, and ready to drop straight back into its original place—**without disturbing the surrounding Markdown design (DA).**
 
@@ -72,7 +72,7 @@ If the user’s request is to **insert**, **add**, **clarify**, **develop**, or 
 **EXAMPLE**  
 Original: *   **SAFTI** : Réseau digital de mandataires immobiliers 
 User request: “Développe sur SAFTI.”  
-Correct output: *   **SAFTI** : Réseau digital de mandataires immobiliers (réseau international fondé en 2010, 6 500 conseillers, modèle sans agence physique, labellisé French Tech Next40 et Happy At Work – en savoir plus : [join-safti.com](https://www.join-safti.com)) 
+Correct output: *   **SAFTI** : Réseau digital de mandataires immobiliers (réseau international fondé en 2010, 6500 conseillers, modèle sans agence physique, labellisé French Tech Next40 et Happy At Work – en savoir plus : [join-safti.com](https://www.join-safti.com)) 
 **Do NOT output** a paragraph, a sentence without the bullet and bold, or a restructured block.  
 **Do NOT drop the bullet, the bold, or the colon.**  
 **Do NOT merge with other list items or change the original structure.**
@@ -89,7 +89,35 @@ Correct output: *   **SAFTI** : Réseau digital de mandataires immobiliers (rés
 **If any instruction is unclear, default to minimally invasive editing—do not improvise.**
 `;
 
+const PROMPT=` You are an expert AI editing assistant.
 
+**MISSION** → Rewrite or augment ONLY the user-highlighted fragment. Return exactly the container block — nothing else.
+
+**INPUT SECTIONS**
+1. {fullMarkdown}         ← full document (reference)
+2. {highlightedText}      ← fragment to change
+3. {textBlocks}           ← container block to return
+
+**RULES**
+• Touch ONLY the fragment. Do NOT alter surrounding Markdown.  
+• Preserve every heading level, list bullet, colon, bold/italic marker, link, and code fence outside the fragment.  
+• Minimal edits by default. Rewrite whole block ONLY if user states “rewrite entire block”.  
+• For *insert/expand* requests, add content inside the block (parentheses, inline phrases, or new list items) without changing its outer structure.  
+• Keep punctuation and layout identical unless change is indispensable to the edit.  
+• Output must be valid Markdown, ready to paste back.
+
+**EXAMPLE**  
+Original: *   **SAFTI** : Réseau digital de mandataires immobiliers 
+User request: “Développe sur SAFTI.”  
+Correct output: *   **SAFTI** : Réseau digital de mandataires immobiliers (réseau international fondé en 2010, 6500 conseillers, modèle sans agence physique, labellisé French Tech Next40 et Happy At Work – en savoir plus : [join-safti.com](https://www.join-safti.com)) 
+**Do NOT output** a paragraph, a sentence without the bullet and bold, or a restructured block.  
+**Do NOT drop the bullet, the bold, or the colon.**  
+**Do NOT merge with other list items or change the original structure.**
+
+**SURGICAL EDITING IS MANDATORY. ONLY REWRITE THE WHOLE BLOCK IF EXPLICITLY ASKED.**
+
+**IF YOU HAVE THE WEBSEARCH TOOL ENABLED, YOU MUST USE IT TO FACT-CHECK YOUR RESPONSE AND GIVE YOUR SOURCES.**
+`
 /**
  * Update an existing artifact based on the user's query.
  */
@@ -145,6 +173,8 @@ export const updateHighlightedText = async (
     );
   }
 
+  console.log("Updating highlighted text:", state.highlightedText);
+
   const { markdownBlock, selectedText, fullMarkdown } = state.highlightedText;
   
   // Validate that selectedText is not empty or just whitespace
@@ -174,13 +204,8 @@ export const updateHighlightedText = async (
 
   const contextDocumentMessages = await createContextDocumentMessages(config);
   const isO1MiniModel = isUsingO1MiniModel(config);
-  const modelConfig = getModelConfig(config);
   
-  console.log("message recentUserMessage : ", recentUserMessage);
-  console.log("contextDocumentMessages : ", contextDocumentMessages);
-  console.log("Using model with web search:", state.webSearchEnabled);
 
-  console.log("Model configuration:", modelConfig);
 
   let response;
 
@@ -207,16 +232,14 @@ export const updateHighlightedText = async (
   ]);}
   
 
-  console.log("RESPONSE:", response);
-
-
-
   // Handle response format based on web search enabled
   const responseContent = state.webSearchEnabled
     ? response.content[0].text as string
     : response.content as string;
+  console.log("WEB SEARCH ENABLED:", state.webSearchEnabled);
+  console.log("Response content:", responseContent);
+  console.log("Artifact contents before update:", state.artifact.contents);
 
-  console.log("RESPONSE CONTENT:", responseContent );
 
   const newCurrIndex = state.artifact.contents.length + 1;
   const prevContent = state.artifact.contents.find(
@@ -229,11 +252,6 @@ export const updateHighlightedText = async (
   if (!fullMarkdown.includes(markdownBlock)) {
     throw new Error("Selected text not found in current content");
   }
-
-  console.log("BEFORE REPLACE:");
-  console.log("fullMarkdown:", fullMarkdown);
-  console.log("markdownBlock:", markdownBlock);
-  console.log("responseContent:", responseContent);
   
   // Ensure proper line breaks are preserved
   const processedContent = responseContent.replace(/\\n/g, '\n');
@@ -251,11 +269,7 @@ export const updateHighlightedText = async (
     index: newCurrIndex,
     fullMarkdown: newFullMarkdown,
   };
-  console.log("AFTER REPLACE:");
-  console.log("newFullMarkdown:", newFullMarkdown);
-  console.log("EEEEEEEEENNNNNNNNNNNNNNCUUUUUUUUUUUUULLLLLLLLLLLLEEEEEEERRRRRRRRR")
 
-  console.log("STATE ARTIFACT CONTENTS OAIDNOIPADJI0DJAD0PAINDO2IH:", updatedArtifactContent);
 
   return {
     artifact: {

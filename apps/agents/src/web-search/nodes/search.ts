@@ -44,8 +44,6 @@ export async function search(
   const query = state.messages[state.messages.length - 1].content as string;
 
   // Get model configuration from config
-  const modelConfig = getModelConfig(config);
-
 
 
   const model = (
@@ -54,16 +52,11 @@ export async function search(
           webSearchEnabled: state.webSearchEnabled,
         }));
 
- 
-  
-
-
   // Get the current artifact content if available
   const currentArtifactContent = state.artifact?.contents?.find(
     (c) => c.index === state.artifact?.currentIndex && c.type === "text"
   )?.fullMarkdown || "";
 
-  console.log("CURRENT ARTIFACT CONTENT", currentArtifactContent)
 
   // Build the enhanced prompt with artifact content
   const enhancedPrompt = WEB_SEARCH_QUERY + 
@@ -72,22 +65,22 @@ export async function search(
 
   const response = await model.invoke([{role: "system", content: enhancedPrompt}]);
 
-  //console.log("O3 full response:", completion);
+  
+
+
 
   const responseContent = typeof response.content === 'string' ? response.content : 
     (response.content && response.content[0] && typeof response.content[0] === 'object' && 'text' in response.content[0] ? response.content[0].text : "");
-  console.log("VRAI REPONSE", responseContent);
-  console.log( modelConfig.modelName, "content:", responseContent);
 
   // Parse the two-part response
+
+  console.log("Response content WEEEEB SEARCH:", responseContent);
   const userAnswerMatch = responseContent.match(/=== USER ANSWER ===([\s\S]*?)=== SOURCES JSON ===/);
   const sourcesJsonMatch = responseContent.match(/=== SOURCES JSON ===([\s\S]*?)$/);
 
   const userAnswer = userAnswerMatch ? userAnswerMatch[1].trim() : "";
   let sourcesJson = sourcesJsonMatch ? sourcesJsonMatch[1].trim() : "";
 
-  ///console.log("Extracted user answer:", userAnswer);
-  //console.log("Extracted sources JSON:", sourcesJson);
 
   // Clean JSON
   if (sourcesJson.startsWith("```json")) {
@@ -105,8 +98,6 @@ export async function search(
       pageContent: "", // Empty for now, just need URLs for right panel
       metadata: source.metadata
     }));
-
-    //console.log("Parsed search results:", searchResults);
     
     return {
       webSearchResults: searchResults,

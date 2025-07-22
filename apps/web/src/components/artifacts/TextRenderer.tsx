@@ -18,6 +18,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
 import { Textarea } from "../ui/textarea";
 import { cn } from "@/lib/utils";
+import styles from "./TextRenderer.module.css";
 
 const cleanText = (text: string) => {
   return text
@@ -37,7 +38,7 @@ const cleanText = (text: string) => {
 // Function to flatten nested bulletListItem and numberedListItem structures
 const flattenListBlocks = (blocks: any[]): any[] => {
   const flattenedBlocks: any[] = [];
-  let numberedListCounter = 1;
+  const UNUSED_numberedListCounter = 1;
   
   for (const block of blocks) {
     if (block.type === 'bulletListItem' || block.type === 'numberedListItem') {
@@ -112,6 +113,7 @@ function ViewRawText({
   );
 }
 
+
 export interface TextRendererProps {
   isEditing: boolean;
   isHovering: boolean;
@@ -119,7 +121,11 @@ export interface TextRendererProps {
 }
 
 export function TextRendererComponent(props: TextRendererProps) {
-  const editor = useCreateBlockNote({});
+  const editor = useCreateBlockNote({
+    defaultBlockType: "paragraph",
+    // Enable keyboard shortcuts for bold/italic functionality
+    includeKeyboardShortcuts: true,
+  });
   const { graphData } = useGraphContext();
   const {
     artifact,
@@ -185,6 +191,46 @@ export function TextRendererComponent(props: TextRendererProps) {
     }
   }, [props.isInputVisible]);
 
+  // Add minimal paste handler to prevent BlockNote paste errors while preserving formatting
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const target = e.target as HTMLElement;
+      
+      // Only handle paste if it's within our BlockNote editor
+      if (!target.closest('.bn-editor') && !target.closest('[data-testid="blocknote-editor"]')) {
+        return; // Let browser handle normally
+      }
+      
+      e.preventDefault();
+      
+      // Get clipboard data
+      const clipboardData = e.clipboardData;
+      if (!clipboardData) return;
+      
+      const plainData = clipboardData.getData('text/plain');
+      if (plainData) {
+        // Clean markdown formatting from pasted text to prevent formatting inheritance
+        let cleanText = plainData;
+        
+        // Remove markdown bold/italic markers
+        cleanText = cleanText.replace(/\*\*(.*?)\*\*/g, '$1'); // **bold** -> bold
+        cleanText = cleanText.replace(/\*(.*?)\*/g, '$1');     // *italic* -> italic
+        
+        // Simple text insertion using execCommand (works reliably)
+        document.execCommand('insertText', false, cleanText);
+      }
+    };
+
+    // Add paste listener
+    document.addEventListener('paste', handlePaste, true);
+    
+    return () => {
+      document.removeEventListener('paste', handlePaste, true);
+    };
+  }, []);
+
+
+
   useEffect(() => {
     if (!artifact) {
       return;
@@ -198,7 +244,7 @@ export function TextRendererComponent(props: TextRendererProps) {
     }
 
     try {
-      console.log("TOUT l'ARTIFACT", artifact);
+
       const currentIndex = artifact.currentIndex;
       const currentContent = artifact.contents.find(
         (c) => c.index === currentIndex && c.type === "text"
@@ -207,18 +253,14 @@ export function TextRendererComponent(props: TextRendererProps) {
 
       // Blocks are not found in the artifact, so once streaming is done we should update the artifact state with the blocks
       (async () => {
-        console.log("🔍 RAW MARKDOWN:", currentContent.fullMarkdown);
         const cleanedMarkdown = cleanText(currentContent.fullMarkdown);
-        console.log("🔍 CLEANED MARKDOWN:", cleanedMarkdown);
         const markdownAsBlocks = await editor.tryParseMarkdownToBlocks(
           cleanedMarkdown
         );
-        console.log("🔍 MARKDOWN AS BLOCKS (BEFORE FLATTEN):", markdownAsBlocks);
         
         // Flatten nested list structures
-        const flattenedBlocks = flattenListBlocks(markdownAsBlocks);
-        console.log("🔍 FLATTENED BLOCKS:", flattenedBlocks);
-        
+        const flattenedBlocks = flattenListBlocks(markdownAsBlocks);  
+
         editor.replaceBlocks(editor.document, flattenedBlocks);
         setUpdateRenderedArtifactRequired(false);
         setManuallyUpdatingArtifact(false);
@@ -266,7 +308,7 @@ export function TextRendererComponent(props: TextRendererProps) {
             {
               index: 1,
               fullMarkdown: fullMarkdown,
-              title: "Untitled",
+              title: currentArtifactContent?.title || "Untitled",
               type: "text",
             },
           ],
@@ -299,7 +341,7 @@ export function TextRendererComponent(props: TextRendererProps) {
             {
               index: 1,
               fullMarkdown: newRawMarkdown,
-              title: "Untitled",
+              title: currentArtifactContent?.title || "Untitled",
               type: "text",
             },
           ],
@@ -322,7 +364,7 @@ export function TextRendererComponent(props: TextRendererProps) {
   };
 
   return (
-    <div className="w-full h-full mt-2 flex flex-col border-t-[1px] border-gray-200 overflow-y-auto py-5 relative">
+    <div className={cn("w-full h-full mt-2 flex flex-col border-t-[1px] border-gray-200 overflow-y-auto py-5 relative", styles.lightModeOnly)}>
       {props.isHovering && artifact && (
         <div className="absolute flex gap-2 top-2 right-4 z-10">
           <CopyText currentArtifactContent={getArtifactContent(artifact)} />
@@ -351,17 +393,16 @@ export function TextRendererComponent(props: TextRendererProps) {
                 opacity: 0.3;
               }
             }
+
           `}</style>
           <BlockNoteView
             theme="light"
-            formattingToolbar={false}
+            formattingToolbar={props.isEditing}
             slashMenu={false}
             onCompositionStartCapture={() => (isComposition.current = true)}
             onCompositionEndCapture={() => (isComposition.current = false)}
             onChange={onChange}
-            editable={
-              !isStreaming || props.isEditing || !manuallyUpdatingArtifact
-            }
+            editable={true}
             editor={editor}
             className={cn(
               isStreaming && !firstTokenReceived ? "pulse-text" : "",

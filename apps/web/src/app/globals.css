@@ -159,17 +159,264 @@ a {
   font-size: 0.9em;
 }
 
-/* BlockNote editor theme */
+/* BlockNote editor theme with Cambria typography */
 .custom-blocknote-theme {
-  --bn-colors-editor-text: #3f3f3f;
+  --bn-colors-editor-text: #000000;
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 17.75pt !important;
+  line-height: normal !important;
+  letter-spacing: normal !important;
+  word-spacing: normal !important;
+  color: #000000 !important;
 }
-.custom-blocknote-theme a {
-  color: var(--accent) !important;
-  text-decoration: none;
+
+/* Force Cambria on all BlockNote elements - more specific selectors */
+.custom-blocknote-theme *,
+.custom-blocknote-theme .ProseMirror,
+.custom-blocknote-theme .ProseMirror *,
+.custom-blocknote-theme .bn-editor,
+.custom-blocknote-theme .bn-editor *,
+.custom-blocknote-theme .bn-container,
+.custom-blocknote-theme .bn-container *,
+.custom-blocknote-theme [data-node-type],
+.custom-blocknote-theme [contenteditable] {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  color: #000000 !important;
+}
+
+/* Cambria font optimization */
+@font-face {
+  font-family: 'CambriaFallback';
+  src: local('Cambria'), local('Times New Roman'), local('Times');
+  font-display: swap;
+}
+
+
+/* Corps de texte et éléments de base */
+.custom-blocknote-theme p,
+.custom-blocknote-theme td,
+.custom-blocknote-theme th,
+.custom-blocknote-theme blockquote,
+.custom-blocknote-theme label,
+.custom-blocknote-theme figcaption {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  color: #000000 !important;
+  font-size: 17.75pt !important;
+  line-height: normal !important;
+  letter-spacing: normal !important;
+  word-spacing: normal !important;
+  text-align: justify !important;
+  margin-top: 0pt !important;
+  margin-bottom: 14pt !important;
+}
+
+/* Titres principaux */
+.custom-blocknote-theme h1 {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 18.2pt;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 14pt;
+  margin-top: 14pt;
+  text-align: justify;
+  line-height: normal;
+}
+
+/* Titres de niveaux 2 à 6 */
+.custom-blocknote-theme h2,
+.custom-blocknote-theme h3,
+.custom-blocknote-theme h4,
+.custom-blocknote-theme h5,
+.custom-blocknote-theme h6 {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  color: #000000;
+  font-size: 14.3pt;
+  font-weight: bold;
+  line-height: normal;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-align: justify;
+  margin-top: 14pt;
+  margin-bottom: 14pt;
+}
+
+/* Listes à puces et numérotées */
+.custom-blocknote-theme ul,
+.custom-blocknote-theme ol {
+  text-align: left;
+  margin-bottom: 0pt !important;
+  margin-top: 0pt !important;
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  color: #000000;
+  font-size: 17.75pt;
+  line-height: 1 !important;
+}
+
+.custom-blocknote-theme li {
+  text-align: left;
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  color: #000000;
+  font-size: 17.75pt;
+  margin: 0pt !important;
+  padding: 0pt !important;
+  line-height: 1.2 !important;
+  margin-bottom: 0pt !important;
+  margin-top: 0pt !important;
+}
+
+/* FIX FINAL - Espacement équilibré pour bullet points */
+div[data-content-type="bulletListItem"] {
+ 
+  margin: 30pt !important;
+  padding: 0pt !important;
+  margin-bottom: -4pt !important;
+  margin-top: -4pt !important;
+  line-height: 1 !important;
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 17.75pt !important;
+  color: #000000 !important;
+}
+
+/* Ajustement des éléments avant/après les bullet points */
+div[data-content-type="paragraph"] + div[data-content-type="bulletListItem"] {
+  margin-top: -3pt !important;
+}
+
+div[data-content-type="bulletListItem"] + div[data-content-type="paragraph"] {
+  margin-top: -3pt !important;
+}
+
+/* Suppression de l'espacement des blocs BlockNote pour les listes */
+.bn-block-group {
+  margin: 0pt !important;
+  margin-bottom: 0pt !important;
+  margin-top: 0pt !important;
+}
+
+/* Ciblage des conteneurs de bullet points */
+div[data-content-type="bulletListItem"] .bn-block-group,
+div[data-content-type="bulletListItem"] > *,
+div[data-content-type="bulletListItem"] .bn-block-content,
+div[data-content-type="bulletListItem"] [contenteditable] {
+  margin: 0pt !important;
+  padding: 0pt !important;
+  margin-bottom: 0pt !important;
+  margin-top: 0pt !important;
+  line-height: 1.2 !important;
+}
+
+
+/* Listes à puces – style */
+.custom-blocknote-theme ul {
+  padding-left: 20pt;
+  margin-left: 0pt;
+  list-style-type: disc;
+  list-style-position: outside;
+}
+.custom-blocknote-theme ul ul {
+  list-style-type: circle;
+}
+
+/* Listes numérotées – style */
+.custom-blocknote-theme ol {
+  padding-left: 20pt;
+  margin-left: 0pt;
+  list-style-type: decimal;
+  list-style-position: outside;
+}
+.custom-blocknote-theme ol ol {
+  list-style-type: lower-alpha;
+}
+
+/* Liens */
+.custom-blocknote-theme a,
+.custom-blocknote-theme a:visited {
+  color: #0000EE !important;
+  text-decoration: underline;
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 17.75pt;
 }
 .custom-blocknote-theme a:hover {
+  color: #551A8B !important;
   text-decoration: underline;
-  text-underline-offset: 2px;
+}
+.custom-blocknote-theme a:active {
+  color: #FF0000 !important;
+}
+
+/* Mise en emphase */
+.custom-blocknote-theme strong,
+.custom-blocknote-theme b {
+  font-weight: bold;
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  color: #000000;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  pointer-events: auto !important;
+}
+.custom-blocknote-theme em,
+.custom-blocknote-theme i {
+  font-style: italic;
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  color: #000000;
+}
+.custom-blocknote-theme u {
+  text-decoration: underline;
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  color: #000000;
+}
+.custom-blocknote-theme mark {
+  background-color: #FFFB00;
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  color: #000000;
+}
+
+/* Citations */
+.custom-blocknote-theme blockquote {
+  margin-left: 40pt;
+  margin-right: 40pt;
+  padding-left: 10pt;
+  border-left: 2pt solid #CCCCCC;
+  font-style: italic;
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  color: #000000;
+  font-size: 17.75pt;
+}
+
+/* Code et préformatage */
+.custom-blocknote-theme pre,
+.custom-blocknote-theme code {
+  font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace !important;
+  background-color: #F5F5F5;
+  border: 1pt solid #DDDDDD;
+  padding: 2pt;
+  white-space: pre;
+  text-align: justify;
+  color: #000000;
+  font-size: 17.75pt;
+}
+
+/* Images et médias */
+.custom-blocknote-theme img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.custom-blocknote-theme figure {
+  text-align: center;
+}
+.custom-blocknote-theme figcaption {
+  font-family: "Cambria", "Times New Roman", Times, serif !important;
+  font-size: 17.75pt;
+  color: #666666;
+}
+
+/* Lignes horizontales */
+.custom-blocknote-theme hr {
+  border: none;
+  border-top: 1pt solid #000000;
 }
 
 /* Line height for artifact content */

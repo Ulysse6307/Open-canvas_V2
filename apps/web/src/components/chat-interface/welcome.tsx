@@ -1,7 +1,7 @@
 import { ProgrammingLanguageOptions } from "@opencanvas/shared/types";
 import { ThreadPrimitive, useThreadRuntime } from "@assistant-ui/react";
-import { FC, useMemo } from "react";
-import { NotebookPen } from "lucide-react";
+import { FC, useMemo, ChangeEvent } from "react";
+import { NotebookPen, FileText } from "lucide-react";
 import { Button } from "../ui/button";
 
 const QUICK_START_PROMPTS_SEARCH = [
@@ -43,6 +43,7 @@ interface QuickStartButtonsProps {
     type: "text" | "code",
     language?: ProgrammingLanguageOptions
   ) => void;
+  handleFileImport: (file: File) => void;
   composer: React.ReactNode;
   searchEnabled: boolean;
 }
@@ -90,6 +91,13 @@ const QuickStartPrompts = ({ searchEnabled }: QuickStartPromptsProps) => {
 };
 
 const QuickStartButtons = (props: QuickStartButtonsProps) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const selectedFile = e.target.files[0];
+      props.handleFileImport(selectedFile);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-8 items-center justify-center w-full">
       <div className="flex flex-col gap-6">
@@ -102,6 +110,16 @@ const QuickStartButtons = (props: QuickStartButtonsProps) => {
             <NotebookPen className="w-5 h-5" />
             New Markdown
           </Button>
+          <label className="rounded-xl h-[64px] w-[250px] flex items-center justify-center gap-2 bg-gradient-to-r from-tamar-violet to-[#A259FF] text-white shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] cursor-pointer">
+            <input
+              type="file"
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+              accept=".txt,.md,.js,.ts,.tsx,.jsx,.py,.html,.css,.json,.xml,.csv,.doc,.docx"
+            />
+            <FileText className="w-5 h-5" />
+            Edit document
+          </label>
         </div>
       </div>
       <div className="flex flex-col gap-6 mt-2 w-full">
@@ -118,6 +136,7 @@ interface ThreadWelcomeProps {
     type: "text" | "code",
     language?: ProgrammingLanguageOptions
   ) => void;
+  handleFileImport: (file: File) => void;
   composer: React.ReactNode;
   searchEnabled: boolean;
 }
@@ -141,6 +160,7 @@ export const ThreadWelcome: FC<ThreadWelcomeProps> = (
             <QuickStartButtons
               composer={props.composer}
               handleQuickStart={props.handleQuickStart}
+              handleFileImport={props.handleFileImport}
               searchEnabled={props.searchEnabled}
             />
           </div>

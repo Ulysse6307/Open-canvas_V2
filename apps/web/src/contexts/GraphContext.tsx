@@ -278,6 +278,7 @@ export function GraphProvider({ children }: { children: ReactNode }) {
     }
 
     let currentThreadId = threadData.threadId;
+    
     if (!currentThreadId) {
       const newThread = await threadData.createThread();
       if (!newThread) {
@@ -428,11 +429,6 @@ export function GraphProvider({ children }: { children: ReactNode }) {
           } = extractChunkFields(chunk);
 
           // Debug logging for updateHighlightedText
-          if (langgraphNode === "updateHighlightedText") {
-            console.log("🔍 updateHighlightedText event:", event);
-            console.log("🔍 updateHighlightedText chunk:", chunk);
-            console.log("🔍 updateHighlightedText nodeOutput:", nodeOutput);
-          }
 
           if (!runId && runId_) {
             runId = runId_;
@@ -467,7 +463,6 @@ export function GraphProvider({ children }: { children: ReactNode }) {
 
             // Handle direct search node (simplified web search graph)
             if (langgraphNode === "search" && !webSearchMessageId) {
-              console.log("🔍 Search node starting - creating web search message");
               webSearchMessageId = `web-search-results-${uuidv4()}`;
               // The web search is starting. Add a new message.
               setMessages((prev) => {
@@ -490,9 +485,7 @@ export function GraphProvider({ children }: { children: ReactNode }) {
           }
 
           if (event === "on_chat_model_stream") {
-            // Debug logging for streaming events
-            console.log("📡 on_chat_model_stream:", langgraphNode, nodeChunk);
-            
+            // Debug logging for streaming events            
             // These are generating new messages to insert to the chat window.
             if (
               ["generateFollowup", "replyToGeneralInput"].includes(
@@ -614,7 +607,8 @@ export function GraphProvider({ children }: { children: ReactNode }) {
               setFirstTokenReceived(true);
               setArtifact((prev) => {
                 if (!prev) {
-                  throw new Error("No artifact found when updating markdown");
+                  console.error("No artifact found when updating markdown");
+                  return artifact ? updateHighlightedMarkdown(artifact,`${updatedArtifactStartContent}${updatedArtifactRestContent}`,newArtifactIndex,prevCurrentContent,firstUpdateCopy) : prev;
                 }
                 return updateHighlightedMarkdown(
                   prev,
@@ -1218,7 +1212,6 @@ export function GraphProvider({ children }: { children: ReactNode }) {
 
           if (event === "on_chain_end") {
             // Debug logging for chain end events
-            console.log("🏁 on_chain_end:", langgraphNode, nodeOutput);
             
             if (
               langgraphNode === "rewriteArtifact" &&
@@ -1228,11 +1221,9 @@ export function GraphProvider({ children }: { children: ReactNode }) {
             }
 
             if (langgraphNode === "search" && webSearchMessageId) {
-              console.log("🔍 Search node completed, output:", nodeOutput);
               const output = nodeOutput as {
                 webSearchResults: SearchResult[];
               };
-              console.log("🔍 Search results:", output.webSearchResults);
 
               setMessages((prev) => {
                 return prev.map((m) => {
@@ -1251,10 +1242,8 @@ export function GraphProvider({ children }: { children: ReactNode }) {
             }
 
             if (langgraphNode === "updateHighlightedText") {
-              console.log("📝 updateHighlightedText completed, updating artifact");
               const output = nodeOutput as { artifact: ArtifactV3 };
               if (output.artifact) {
-                console.log("📝 Setting artifact:", output.artifact);
                 setArtifact(output.artifact);
               }
             }
