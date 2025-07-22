@@ -35,7 +35,7 @@ import { useUserContext } from "@/contexts/UserContext";
 
 export function CanvasComponent() {
   const { graphData } = useGraphContext();
-  const { setModelName, setModelConfig, threadId, createThread } = useThreadContext();
+  const { setModelName, setModelConfig } = useThreadContext();
   const { setArtifact, chatStarted, setChatStarted, setUpdateRenderedArtifactRequired, streamMessage } = graphData;
   const { toast } = useToast();
   const userData = useUserContext();
@@ -266,24 +266,26 @@ Document details:
           {
             index: 1,
             type: "text",
-            title: file.name.endsWith(".docx") ? file.name.replace(/\.docx$/i, ".md") : file.name,
+            title: file.name.endsWith(".docx") ? file.name.replace(/\.docx$/i, "") : file.name,
             fullMarkdown: content,
           },
         ],
       };
 
+
       setArtifact(newArtifact);
       setUpdateRenderedArtifactRequired(true);
       setIsEditing(false);
+      setChatStarted(true);
 
-      // Store the welcome message to send after artifact is ready
-      const welcomeMessage = `Bonjour ! Je viens d'importer le document "${fileNameWithoutExt}". Comment peux-tu m'aider avec ce document ?`;
+      // Store the welcome message to trigger thread save
+      const welcomeMessage = `Le document "${fileNameWithoutExt}" a été importé. Réponds seulement par un message de bienvenue sans générer d'artifact.`;
       setPendingWelcomeMessage(welcomeMessage);
 
-      // Use setTimeout to ensure artifact state is set before showing canvas
+      // Reset updateRenderedArtifactRequired after a short delay to allow rendering
       setTimeout(() => {
-        setChatStarted(true);
-      }, 0);
+        setUpdateRenderedArtifactRequired(false);
+      }, 200);
 
       toast({
         title: "File imported successfully",
@@ -299,6 +301,7 @@ Document details:
         variant: "destructive",
       });
     }
+    setChatStarted(true);
   };
 
 

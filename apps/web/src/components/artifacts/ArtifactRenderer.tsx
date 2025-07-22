@@ -299,6 +299,7 @@ function ArtifactRendererComponent(props: ArtifactRendererProps) {
     currentArtifactContent.index === artifact.contents.length ||
     isStreaming;
 
+  
   return (
     <div className="relative w-full h-full max-h-screen overflow-auto">
       <ArtifactHeader
@@ -391,5 +392,8 @@ function ArtifactRendererComponent(props: ArtifactRendererProps) {
     </div>
   );
 }
+
+
+
 
 export const ArtifactRenderer = React.memo(ArtifactRendererComponent);

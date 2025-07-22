@@ -26,6 +26,7 @@ export const generateArtifact = async (
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
   
+  console.log("OOOOOOOOKKKKKKKKK")
   const { modelName } = getModelConfig(config, {
     isToolCalling: true,
   });
@@ -99,6 +100,7 @@ export const generateArtifact = async (
     currentIndex: 1,
     contents: [newArtifactContent],
   };
+  
 
   return {
     artifact: newArtifact,

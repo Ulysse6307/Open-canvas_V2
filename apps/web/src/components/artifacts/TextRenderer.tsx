@@ -122,7 +122,6 @@ export interface TextRendererProps {
 
 export function TextRendererComponent(props: TextRendererProps) {
   const editor = useCreateBlockNote({
-    defaultBlockType: "paragraph",
     // Enable keyboard shortcuts for bold/italic functionality
     includeKeyboardShortcuts: true,
   });

@@ -1434,10 +1434,12 @@ export function GraphProvider({ children }: { children: ReactNode }) {
 
     if (!castValues?.messages?.length) {
       setMessages([]);
-      setArtifact(castValues?.artifact);
+      // Only update artifact if we have one from server, otherwise preserve existing
+      setArtifact(prev => castValues?.artifact || prev);
       return;
     }
-    setArtifact(castValues?.artifact);
+    // Only update artifact if we have one from server, otherwise preserve existing
+    setArtifact(prev => castValues?.artifact || prev);
     setMessages(
       castValues.messages.map((msg: Record<string, any>) => {
         if (msg.response_metadata?.langSmithRunURL) {
