@@ -355,10 +355,38 @@ export function GraphProvider({ children }: { children: ReactNode }) {
     let thinkingMessageId = "";
 
     try {
+      // Validate assistant exists before streaming
+      const client = createClient();
+      let validAssistantId = assistantsData.selectedAssistant.assistant_id;
+      
+      try {
+        await client.assistants.get(validAssistantId);
+      } catch (assistantError) {
+        toast({
+          title: "Assistant not found",
+          description: "The selected assistant no longer exists. Creating a new one...",
+          variant: "destructive",
+          duration: 5000,
+        });
+        // Recreate assistant and retry
+        const newAssistant = await assistantsData.getOrCreateAssistant(userData.user?.id || "");
+        if (!newAssistant) {
+          toast({
+            title: "Error",
+            description: "Failed to create assistant",
+            variant: "destructive",
+            duration: 5000,
+          });
+          setIsStreaming(false);
+          return;
+        }
+        validAssistantId = newAssistant.assistant_id;
+      }
+
       const workerService = new StreamWorkerService();
       const stream = workerService.streamData({
         threadId: currentThreadId,
-        assistantId: assistantsData.selectedAssistant.assistant_id,
+        assistantId: validAssistantId,
         input,
         modelName: threadData.modelName,
         modelConfigs: threadData.modelConfigs,
@@ -403,6 +431,8 @@ export function GraphProvider({ children }: { children: ReactNode }) {
       let webSearchMessageId = "";
 
       for await (const chunk of stream) {
+        console.log("EVENT:", chunk.event, "NODE:", chunk.data?.langgraph_node, "DATA:", chunk.data);
+        
         if (chunk.event === "error") {
           const errorMessage =
             chunk?.data?.message || "Unknown error. Please try again.";
@@ -1212,6 +1242,16 @@ export function GraphProvider({ children }: { children: ReactNode }) {
 
           if (event === "on_chain_end") {
             // Debug logging for chain end events
+            
+            // Handle replyToGeneralInput when it doesn't stream (e.g., websearch responses)
+            if (langgraphNode === "replyToGeneralInput" && !followupMessageId) {
+              const output = nodeOutput as { messages: BaseMessage[] };
+              if (output?.messages?.length > 0) {
+                const message = output.messages[0];
+                followupMessageId = message.id;
+                setMessages((prevMessages) => [...prevMessages, message]);
+              }
+            }
             
             if (
               langgraphNode === "rewriteArtifact" &&

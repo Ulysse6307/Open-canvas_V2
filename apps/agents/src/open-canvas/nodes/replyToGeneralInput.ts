@@ -14,6 +14,7 @@ import {
   OpenCanvasGraphAnnotation,
   OpenCanvasGraphReturnType,
 } from "../state.js";
+import { AIMessage, AIMessageChunk } from "@langchain/core/messages";
 
 /**
  * Generate responses to questions. Does not generate artifacts.
@@ -22,7 +23,20 @@ export const replyToGeneralInput = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
-  const smallModel = await getModelFromConfig(config);
+  
+
+  let smallModel;
+
+  if(state.webSearchEnabled ) {
+    smallModel = await getModelFromConfig(config,{webSearchEnabled: state.webSearchEnabled,});
+    console.log("ON EST LAAAAA Web search enabled")
+
+  }
+  else{
+    smallModel = await getModelFromConfig(config);
+    console.log("ON EST LAAAAA Web search pas enabled !")
+  }
+  
 
   const prompt = `You are an AI assistant tasked with responding to the users question.
   
@@ -65,14 +79,93 @@ You also have the following reflections on style guidelines and general memories
 
   const contextDocumentMessages = await createContextDocumentMessages(config);
   const isO1MiniModel = isUsingO1MiniModel(config);
-  const response = await smallModel.invoke([
+  console.log("COntenu du message:",contextDocumentMessages,state._messages, "ET LE PROMMPT", formattedPrompt);
+
+  let response;
+
+  if (state.webSearchEnabled) {
+    function stripIds(messages) {
+      return messages.map(m => ({
+        role: m._getType() === 'human' ? 'user' : m._getType() === 'ai' ? 'assistant' : m._getType(),
+        content: m.content
+      }));
+    }
+
+    function transformWebSearchResponse(webSearchResponse) {
+      // Extract the text content from the websearch response
+      let textContent = "";
+      if (Array.isArray(webSearchResponse.content) && webSearchResponse.content[0]?.text) {
+        textContent = webSearchResponse.content[0].text;
+      }
+      
+      // Create a completely new AIMessageChunk that matches the expected format
+      const usage = webSearchResponse.usage_metadata || {};
+      
+      return new AIMessageChunk({
+        content: textContent,
+        id: `chatcmpl-${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 10)}`,
+        additional_kwargs: {},
+        response_metadata: {
+          usage: {
+            prompt_tokens: usage.input_tokens || 0,
+            completion_tokens: usage.output_tokens || 0,
+            total_tokens: usage.total_tokens || 0,
+            prompt_tokens_details: {
+              cached_tokens: 0,
+              audio_tokens: 0
+            },
+            completion_tokens_details: {
+              reasoning_tokens: 0,
+              audio_tokens: 0,
+              accepted_prediction_tokens: 0,
+              rejected_prediction_tokens: 0
+            }
+          }
+        },
+        tool_calls: [],
+        tool_call_chunks: [],
+        invalid_tool_calls: [],
+        usage_metadata: {
+          input_tokens: usage.input_tokens || 0,
+          output_tokens: usage.output_tokens || 0,
+          total_tokens: usage.total_tokens || 0,
+          input_token_details: {
+            audio: 0,
+            cache_read: 0
+          },
+          output_token_details: {
+            audio: 0,
+            reasoning: 0
+          }
+        }
+      });
+    }
+    
+    console.log("VOICI ce que l'on met pour les messages Web :",contextDocumentMessages, state._messages);
+    response = await smallModel.invoke([
+    { role: isO1MiniModel ? "user" : "system", content: formattedPrompt },
+    ...stripIds(contextDocumentMessages),
+    ...stripIds(state._messages),]);
+      
+      console.log("Response BEFORE transformation:", response);
+      const transformedResponse = transformWebSearchResponse(response);
+      console.log("Response AFTER transformation:", transformedResponse);
+      console.log("WEBSEARCH: About to return from replyToGeneralInput");
+      
+      return {
+    messages: [transformedResponse],
+    _messages: [transformedResponse],
+  };
+  }
+
+  else {response = await smallModel.invoke([
     { role: isO1MiniModel ? "user" : "system", content: formattedPrompt },
     ...contextDocumentMessages,
     ...state._messages,
   ]);
-
-  return {
+  console.log("Response content:, sans websearch", response);
+    return {
     messages: [response],
     _messages: [response],
-  };
+  };}
 };

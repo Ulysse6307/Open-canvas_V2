@@ -20,7 +20,7 @@ type AssistantContentType = {
   isDeletingAssistant: boolean;
   isCreatingAssistant: boolean;
   isEditingAssistant: boolean;
-  getOrCreateAssistant: (userId: string) => Promise<void>;
+  getOrCreateAssistant: (userId: string) => Promise<Assistant | undefined>;
   getAssistants: (userId: string) => Promise<void>;
   deleteAssistant: (assistantId: string) => Promise<boolean>;
   createCustomAssistant: (
@@ -253,7 +253,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
   const legacyGetAndUpdateAssistant = async (
     userId: string,
     assistantIdCookie: string
-  ) => {
+  ): Promise<Assistant | undefined> => {
     const updatedAssistant = await editCustomAssistant({
       editedAssistant: {
         is_default: true,
@@ -294,18 +294,27 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
           </p>
         ),
       });
-      return;
+      return undefined;
     }
 
     setSelectedAssistant(updatedAssistant);
     setAssistants([updatedAssistant]);
     // Remove the cookie to ensure this is not called again.
     removeCookie(ASSISTANT_ID_COOKIE);
+    return updatedAssistant;
   };
 
-  const getOrCreateAssistant = async (userId: string) => {
+  const getOrCreateAssistant = async (userId: string): Promise<Assistant | undefined> => {
+    // Validate selectedAssistant exists on server before returning early
     if (selectedAssistant) {
-      return;
+      try {
+        const client = createClient();
+        await client.assistants.get(selectedAssistant.assistant_id);
+        return selectedAssistant; // Assistant is valid, return it
+      } catch (e) {
+        console.log("Selected assistant no longer exists, creating new one");
+        setSelectedAssistant(undefined); // Clear invalid assistant
+      }
     }
     setIsLoadingAllAssistants(true);
     const client = createClient();
@@ -313,10 +322,10 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
     const assistantIdCookie = getCookie(ASSISTANT_ID_COOKIE);
     if (assistantIdCookie) {
-      await legacyGetAndUpdateAssistant(userId, assistantIdCookie);
+      const legacyAssistant = await legacyGetAndUpdateAssistant(userId, assistantIdCookie);
       // Return early because this function will set the selected assistant and assistants state.
       setIsLoadingAllAssistants(false);
-      return;
+      return legacyAssistant;
     }
 
     // No cookie found. First, search for all assistants under the user's ID
@@ -334,7 +343,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
     if (!userAssistants.length) {
       // No assistants found, create a new assistant and set it as the default.
-      await createCustomAssistant({
+      const newAssistant = await createCustomAssistant({
         newAssistant: {
           iconData: {
             iconName: "User",
@@ -349,7 +358,7 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
 
       // Return early because this function will set the selected assistant and assistants state.
       setIsLoadingAllAssistants(false);
-      return;
+      return newAssistant;
     }
 
     setAssistants(userAssistants);
@@ -394,11 +403,13 @@ export function AssistantProvider({ children }: { children: ReactNode }) {
       });
 
       setSelectedAssistant(updatedAssistant);
+      setIsLoadingAllAssistants(false);
+      return updatedAssistant;
     } else {
       setSelectedAssistant(defaultAssistant);
+      setIsLoadingAllAssistants(false);
+      return defaultAssistant;
     }
-
-    setIsLoadingAllAssistants(false);
   };
 
   const contextValue: AssistantContentType = {

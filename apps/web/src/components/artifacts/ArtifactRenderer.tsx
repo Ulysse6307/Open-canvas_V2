@@ -352,7 +352,7 @@ function ArtifactRendererComponent(props: ArtifactRendererProps) {
             className="absolute top-0 left-0 w-full h-full pointer-events-none"
           />
         </div>
-        {selectionBox && isSelectionActive && isValidSelectionOrigin && (
+        {selectionBox && selectionBox.text && selectionBox.text.trim() && isSelectionActive && isValidSelectionOrigin && (
           <AskOpenCanvas
             ref={selectionBoxRef}
             inputValue={inputValue}

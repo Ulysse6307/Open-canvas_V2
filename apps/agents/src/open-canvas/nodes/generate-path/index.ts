@@ -12,6 +12,7 @@ import {
 } from "./documents.js";
 import { getStringFromContent } from ".././../../utils.js";
 import { includeURLContents } from "./include-url-contents.js";
+import { stat } from "fs";
 
 function extractURLsFromLastMessage(messages: BaseMessage[]): string[] {
   const recentMessage = messages[messages.length - 1];
@@ -27,6 +28,7 @@ export async function generatePath(
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> {
+    console.log("On attend le resultat de generatePath");
   const { _messages } = state;
   const newMessages: BaseMessage[] = [];
   const docMessage = await convertContextDocumentToHumanMessage(
@@ -61,8 +63,6 @@ export async function generatePath(
         : {}),
     };
   }
-
-
 
   if (state.highlightedText) {
     return {
@@ -110,15 +110,6 @@ export async function generatePath(
     };
   }
 
-  if (state.webSearchEnabled && !state.highlightedText) {
-    return {
-      next: "webSearch",
-      ...(newMessages.length
-        ? { messages: newMessages, _messages: newMessages }
-        : {}),
-    };
-  }
-
   // Check if any URLs are in the latest message. If true, determine if the contents should be included
   // inline in the prompt, and if so, scrape the contents and update the prompt.
   const messageUrls = extractURLsFromLastMessage(state._messages);
@@ -140,6 +131,7 @@ export async function generatePath(
         }
       })
     : state._messages;
+  
 
   const routingResult = await dynamicDeterminePath({
     state: {
@@ -149,6 +141,16 @@ export async function generatePath(
     newMessages,
     config,
   });
+
+  if (state.webSearchEnabled && routingResult?.route !="replyToGeneralInput" ) {
+    return {
+      next: "webSearch",
+      ...(newMessages.length
+        ? { messages: newMessages, _messages: newMessages }
+        : {}),
+    };
+  }
+
   const route = routingResult?.route;
   if (!route) {
     throw new Error("Route not found");
