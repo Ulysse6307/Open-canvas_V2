@@ -524,7 +524,7 @@ export function GraphProvider({ children }: { children: ReactNode }) {
             ) {
               const message = extractStreamDataChunk(nodeChunk);
               if (!followupMessageId) {
-                followupMessageId = message.id;
+                followupMessageId = message.id || "";
               }
               setMessages((prevMessages) =>
                 replaceOrInsertMessageChunk(prevMessages, message)
@@ -1233,7 +1233,7 @@ export function GraphProvider({ children }: { children: ReactNode }) {
               NON_STREAMING_TEXT_MODELS.some((m) => m === threadData.modelName)
             ) {
               const message = extractStreamDataOutput(nodeOutput);
-              followupMessageId = message.id;
+              followupMessageId = message.id || "";
               setMessages((prevMessages) =>
                 replaceOrInsertMessageChunk(prevMessages, message)
               );
@@ -1248,7 +1248,7 @@ export function GraphProvider({ children }: { children: ReactNode }) {
               const output = nodeOutput as { messages: BaseMessage[] };
               if (output?.messages?.length > 0) {
                 const message = output.messages[0];
-                followupMessageId = message.id;
+                followupMessageId = message.id || "";
                 setMessages((prevMessages) => [...prevMessages, message]);
               }
             }

@@ -178,8 +178,8 @@ const OPENAI_MODELS: ModelConfigurationParams[] = [
       maxTokens: {
         min: 1,
         max: 65_536,
-        default: 65_536,
-        current: 65_536,
+        default: 16_384,
+        current: 16_384,
       },
     },
     isNew: false,
@@ -187,6 +187,46 @@ const OPENAI_MODELS: ModelConfigurationParams[] = [
   {
     name: "o1",
     label: "o1",
+    config: {
+      provider: "openai",
+      temperatureRange: {
+        min: 0,
+        max: 1,
+        default: 0.5,
+        current: 0.5,
+      },
+      maxTokens: {
+        min: 1,
+        max: 16_000,
+        default: 16_000,
+        current: 16_000,
+      },
+    },
+    isNew: false,
+  },
+  {
+    name: "o3",
+    label: "o3",
+    config: {
+      provider: "openai",
+      temperatureRange: {
+        min: 0,
+        max: 1,
+        default: 0.5,
+        current: 0.5,
+      },
+      maxTokens: {
+        min: 1,
+        max: 100_000,
+        default: 100_000,
+        current: 100_000,
+      },
+    },
+    isNew: false,
+  },
+  {
+    name: "o3-pro",
+    label: "o3-pro",
     config: {
       provider: "openai",
       temperatureRange: {
@@ -565,9 +605,7 @@ const GEMINI_MODELS: ModelConfigurationParams[] = [
 ];
 
 export const LANGCHAIN_USER_ONLY_MODELS = [
-  "o1",
-  "gpt-4o",
-  "gpt-4.5-preview",
+  
   "claude-3-5-sonnet-latest",
   "claude-3-7-sonnet-latest",
   "gemini-2.0-flash-thinking-exp-01-21",
@@ -582,6 +620,7 @@ export const TEMPERATURE_EXCLUDED_MODELS = [
   "o3-mini",
   "o1",
   "o4-mini",
+  "o3",
 ];
 
 // Models which do NOT stream back tool calls.
@@ -606,9 +645,9 @@ export const THINKING_MODELS = [
 
 export const ALL_MODELS: ModelConfigurationParams[] = [
   ...OPENAI_MODELS,
-  ...ANTHROPIC_MODELS,
-  ...FIREWORKS_MODELS,
-  ...GEMINI_MODELS,
+  // ...ANTHROPIC_MODELS,  // Disabled for users
+  // ...FIREWORKS_MODELS,  // Disabled for users
+  // ...GEMINI_MODELS,     // Disabled for users
   ...AZURE_MODELS,
   ...OLLAMA_MODELS,
   ...GROQ_MODELS,

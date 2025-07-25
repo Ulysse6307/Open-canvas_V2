@@ -22,7 +22,7 @@ import {
 
 
 
-const PROMPT2 = `
+/* const _PROMPT2 = `
 You are an expert AI editing assistant with real-time web-research powers.  
 Your mission: **edit only the user-highlighted fragment** to world-class quality, fact-checked online, and ready to drop straight back into its original place—**without disturbing the surrounding Markdown design (DA).**
 
@@ -87,7 +87,7 @@ Correct output: *   **SAFTI** : Réseau digital de mandataires immobiliers (rés
 - **Deliver a single Markdown block—\`textBlocks\`, edited—ready to paste back in place**, with rigorous factual accuracy and impeccable DA compliance.
 
 **If any instruction is unclear, default to minimally invasive editing—do not improvise.**
-`;
+`; */
 
 const PROMPT=` You are an expert AI editing assistant.
 
@@ -99,18 +99,26 @@ const PROMPT=` You are an expert AI editing assistant.
 3. {textBlocks}           ← container block to return
 
 **RULES**
-• Touch ONLY the fragment. Do NOT alter surrounding Markdown.  
+• TOUCH ONLY THE FRAGMENT. Do NOT alter surrounding Markdown.  
 • Preserve every heading level, list bullet, colon, bold/italic marker, link, and code fence outside the fragment.  
 • Minimal edits by default. Rewrite whole block ONLY if user states “rewrite entire block”.  
-• For *insert/expand* requests, add content inside the block (parentheses, inline phrases, or new list items) without changing its outer structure.  
+• For *insert/expand* requests, add content inside the block (parentheses, inline phrases, or new list items) without changing its outer structure.
+• If the block is a list item, keep it as a list item. If it’s bold, keep it bold. If it’s a link, keep the link syntax.
+• If the user asks to explain, DO NOT REWRITE THE WHOLE BLOCK unless explicitly asked, try to add the explanation in parentheses or as an inline phrase.
 • Keep punctuation and layout identical unless change is indispensable to the edit.  
 • Output must be valid Markdown, ready to paste back.
 
 **EXAMPLE**  
-Original: *   **SAFTI** : Réseau digital de mandataires immobiliers 
-User request: “Développe sur SAFTI.”  
-Correct output: *   **SAFTI** : Réseau digital de mandataires immobiliers (réseau international fondé en 2010, 6500 conseillers, modèle sans agence physique, labellisé French Tech Next40 et Happy At Work – en savoir plus : [join-safti.com](https://www.join-safti.com)) 
-**Do NOT output** a paragraph, a sentence without the bullet and bold, or a restructured block.  
+ORIGINAL: *   **SAFTI** : Réseau digital de mandataires immobiliers 
+USER REQUEST: “Développe sur SAFTI.”  
+CORRECT OUTPUT: *   **SAFTI** : Réseau digital de mandataires immobiliers (réseau international fondé en 2010, 6500 conseillers, modèle sans agence physique, labellisé French Tech Next40 et Happy At Work – en savoir plus : [join-safti.com](https://www.join-safti.com)) 
+
+ORIGINAL: * Maison Captain est une marque française de prêt-à-porter féminin qui se distingue par son modèle de vente directe et son engagement envers une mode éco-responsable. Fondée il y a plus de 30 ans, l'entreprise propose des collections variées allant des vêtements aux accessoires, en passant par la maroquinerie et les chaussures.
+USER REQUEST: "Rajoute d'autres entreprises francaises qui ont été fondées il y a plus de 30 ans",  fragment to change : "Fondée il y a plus de 30 ans"
+CORRECT OUTPUT:* Maison Captain est une marque française de prêt-à-porter féminin qui se distingue par son modèle de vente directe et son engagement envers une mode éco-responsable. Fondée il y a plus de 30 ans, ainsi que d'autres entreprises françaises emblématiques telles que Le Slip Français, Sézane ou Balzac Paris, l'entreprise propose des collections variées allant des vêtements aux accessoires, en passant par la maroquinerie et les chaussures.
+
+
+
 **Do NOT drop the bullet, the bold, or the colon.**  
 **Do NOT merge with other list items or change the original structure.**
 
@@ -234,7 +242,7 @@ export const updateHighlightedText = async (
 
   // Handle response format based on web search enabled
   const responseContent = state.webSearchEnabled
-    ? response.content[0].text as string
+    ? (Array.isArray(response.content) && response.content[0] && typeof response.content[0] === 'object' && 'text' in response.content[0] ? response.content[0].text as string : response.content as string)
     : response.content as string;
   console.log("WEB SEARCH ENABLED:", state.webSearchEnabled);
   console.log("Response content:", responseContent);

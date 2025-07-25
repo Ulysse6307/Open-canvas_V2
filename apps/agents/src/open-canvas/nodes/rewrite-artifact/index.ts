@@ -77,12 +77,23 @@ export const rewriteArtifact = async (
   const isO1MiniModel = isUsingO1MiniModel(config);
   let newArtifactResponse;
 
+  console.log("State REWRITEARTIFACTWEBSEARCH", state.webSearchRewriteArtifact);
+  
+
   if (state.webSearchRewriteArtifact) {
+    const formattedWebSearchPrompt = REWRITE_OR_GENERATE_ARTIFACT_FROM_WEB_PROMPT
+      .replace("{reflections}", memoriesAsString)
+      .replace("{artifactContent}", artifactContent);
+    const fullWebSearchSystemPrompt = userSystemPrompt
+      ? `${userSystemPrompt}\n${formattedWebSearchPrompt}`
+      : formattedWebSearchPrompt;
+    
     newArtifactResponse = await LLMconfig.invoke([
-    { role: isO1MiniModel ? "user" : "system", content: REWRITE_OR_GENERATE_ARTIFACT_FROM_WEB_PROMPT },
+    { role: isO1MiniModel ? "user" : "system", content: fullWebSearchSystemPrompt },
     ...contextDocumentMessages,
     ...state._messages,
   ]);
+  console.log("CE QU'IL RECOIT:", fullWebSearchSystemPrompt, "MAIS AUSSI CONTEXT:", contextDocumentMessages, "ET MESSAGES:", state._messages);
   }
   else{
     newArtifactResponse = await LLMconfig.invoke([
@@ -91,6 +102,8 @@ export const rewriteArtifact = async (
     recentHumanMessage,
   ]);
   }
+
+  console.log("REwrite Artifact Response:", newArtifactResponse);
 
 
   let thinkingMessage: AIMessage | undefined;

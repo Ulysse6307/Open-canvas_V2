@@ -51,7 +51,7 @@
   background-color: #ffffff;
   color: #000000;
   font-family: "Cambria", "Times New Roman", Times, serif;
-  font-size: 17.75pt;
+  font-size: 16.75pt;
   line-height: normal;
   text-align: justify;
 }
@@ -60,14 +60,14 @@
 .lightModeOnly :global(.w-md-editor-text-input) {
   color: #000000 !important;
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 17.75pt !important;
+  font-size: 16.75pt !important;
   line-height: normal !important;
 }
 
 /* Additional Arial styling for markdown elements */
 .lightModeOnly :global(.wmde-markdown h1) {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 23.66pt !important;
+  font-size: 22.66pt !important;
   font-weight: bold !important;
   color: #000000 !important;
   margin-bottom: 7pt !important;
@@ -81,7 +81,7 @@
 .lightModeOnly :global(.wmde-markdown h5),
 .lightModeOnly :global(.wmde-markdown h6) {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 18.59pt !important;
+  font-size: 17.59pt !important;
   font-weight: bold !important;
   color: #000000 !important;
   margin-bottom: 7pt !important;
@@ -91,7 +91,7 @@
 
 .lightModeOnly :global(.wmde-markdown p) {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 17.75pt !important;
+  font-size: 16.75pt !important;
   color: #000000 !important;
   text-align: justify !important;
   margin-bottom: 7pt !important;
@@ -99,7 +99,7 @@
 
 .lightModeOnly :global(.wmde-markdown li) {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 17.75pt !important;
+  font-size: 16.75pt !important;
   color: #000000 !important;
   text-align: justify !important;
   margin-bottom: 0pt !important;
@@ -187,7 +187,7 @@
   margin-inline-start: 0pt !important;
   margin-inline-end: 0pt !important;
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 17.75pt !important;
+  font-size: 16.75pt !important;
   color: #000000 !important;
   text-align: justify !important;
 }
@@ -229,21 +229,21 @@
 /* BlockNote specific styling for Arial font */
 .lightModeOnly :global(.bn-container) {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 17.75pt !important;
+  font-size: 16.75pt !important;
   line-height: normal !important;
   color: #000000 !important;
 }
 
 .lightModeOnly :global(.bn-editor) {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 17.75pt !important;
+  font-size: 16.75pt !important;
   color: #000000 !important;
   background-color: #ffffff !important;
 }
 
 .lightModeOnly :global(.ProseMirror) {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 17.75pt !important;
+  font-size: 16.75pt !important;
   line-height: normal !important;
   color: #000000 !important;
   text-align: justify !important;
@@ -251,7 +251,7 @@
 
 .lightModeOnly :global(.ProseMirror h1) {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 23.66pt !important;
+  font-size: 22.66pt !important;
   font-weight: bold !important;
   color: #000000 !important;
   margin-top: 20pt !important;
@@ -265,7 +265,7 @@
 .lightModeOnly :global(.ProseMirror h5),
 .lightModeOnly :global(.ProseMirror h6) {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 18.59pt !important;
+  font-size: 17.59pt !important;
   font-weight: bold !important;
   color: #000000 !important;
   margin-bottom: 14pt !important;
@@ -275,7 +275,7 @@
 
 .lightModeOnly :global(.ProseMirror p) {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 17.75pt !important;
+  font-size: 16.75pt !important;
   color: #000000 !important;
   text-align: justify !important;
   margin-bottom: 14pt !important;
@@ -283,7 +283,7 @@
 
 .lightModeOnly :global(.ProseMirror li) {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 17.75pt !important;
+  font-size: 16.75pt !important;
   color: #000000 !important;
   text-align: justify !important;
   margin-bottom: 0pt !important;

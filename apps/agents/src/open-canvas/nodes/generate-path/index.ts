@@ -12,7 +12,7 @@ import {
 } from "./documents.js";
 import { getStringFromContent } from ".././../../utils.js";
 import { includeURLContents } from "./include-url-contents.js";
-import { stat } from "fs";
+
 
 function extractURLsFromLastMessage(messages: BaseMessage[]): string[] {
   const recentMessage = messages[messages.length - 1];
@@ -143,6 +143,7 @@ export async function generatePath(
   });
 
   if (state.webSearchEnabled && routingResult?.route !="replyToGeneralInput" ) {
+    console.log("Web search enabled, routing to webSearch");
     return {
       next: "webSearch",
       ...(newMessages.length

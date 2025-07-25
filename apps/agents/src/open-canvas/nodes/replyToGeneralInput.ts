@@ -1,4 +1,4 @@
-import { LangGraphRunnableConfig } from "@langchain/langgraph";
+import { LangGraphRunnableConfig} from "@langchain/langgraph";
 import { getArtifactContent } from "@opencanvas/shared/utils/artifacts";
 import { Reflections } from "@opencanvas/shared/types";
 import {
@@ -14,8 +14,7 @@ import {
   OpenCanvasGraphAnnotation,
   OpenCanvasGraphReturnType,
 } from "../state.js";
-import { AIMessage, AIMessageChunk } from "@langchain/core/messages";
-
+import { AIMessageChunk } from "@langchain/core/messages";
 /**
  * Generate responses to questions. Does not generate artifacts.
  */
@@ -84,14 +83,14 @@ You also have the following reflections on style guidelines and general memories
   let response;
 
   if (state.webSearchEnabled) {
-    function stripIds(messages) {
-      return messages.map(m => ({
+    function stripIds(messages: any) {
+      return messages.map((m: any )=> ({
         role: m._getType() === 'human' ? 'user' : m._getType() === 'ai' ? 'assistant' : m._getType(),
         content: m.content
       }));
     }
 
-    function transformWebSearchResponse(webSearchResponse) {
+    function transformWebSearchResponse(webSearchResponse: any) {
       // Extract the text content from the websearch response
       let textContent = "";
       if (Array.isArray(webSearchResponse.content) && webSearchResponse.content[0]?.text) {

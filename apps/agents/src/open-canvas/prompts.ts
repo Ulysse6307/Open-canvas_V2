@@ -421,21 +421,47 @@ ${DEFAULT_CODE_PROMPT_RULES}
 </rules-guidelines>`;
 
 
-export const REWRITE_OR_GENERATE_ARTIFACT_FROM_WEB_PROMPT = `You are an expert AI assistant. Your task:
+export const REWRITE_OR_GENERATE_ARTIFACT_FROM_WEB_PROMPT = `You are an AI assistant tasked with updating an artifact by incorporating web search results into a specific section.
 
-1. From the conversation history (state._messages), locate the **last** message whose content contains these two markers:
-   ---START OF REQUIRED CONTENT---
-   (some text)
-   ---END OF REQUIRED CONTENT---
+Here is the current content of the artifact:
+<artifact>
+{artifactContent}
+</artifact>
 
-2. Extract **only** the text between those two markers.
+**STRICT INSTRUCTIONS:**
 
-3. Rewrite **only** that extracted text for improved clarity, style, and formatting—adjust headings, punctuation, and phrasing as needed—but **do not** change any factual or substantive content.
+1. **Find the web search results**: Locate the LAST AIMessage in the conversation that contains web search results.
 
-4. You must rewrite the form of the text so it perfectly fits the Markdown format.
+2. **Identify WHERE to add content**: Look at the user's most recent HumanMessage to understand WHERE in the artifact they want to add the web search information (which section, after which heading, etc.).
 
-5. Return **just** the rewritten text (omit the markers entirely). Do **not** include or mention the ---START OF REQUIRED CONTENT--- or ---END OF REQUIRED CONTENT--- lines, and do **not** output any other text or commentary.
+3. **Add content to the specified location**: Take the web search results from the last AIMessage and add them WORD-FOR-WORD (including ALL links, citations, and formatting) to the exact location specified by the user in their request.
 
-Your entire response should be the rewritten block by itself, with no additional prefixes, suffixes, or markers`;
+4. **Return the complete modified artifact**: You must return the ENTIRE artifact with the web search results integrated into the appropriate section. Do NOT return only the new section - return the full modified artifact.
+
+**CRITICAL REQUIREMENTS:**
+- Copy web search results EXACTLY as provided - do NOT paraphrase, summarize, or modify them
+- Preserve ALL links, citations, and formatting from the web search results  
+- Add the content to the specific section/location mentioned in the user's request
+- Keep all existing content of the artifact unchanged except for adding the new web search content
+- Maintain the original formatting and structure of the artifact
+- Return the COMPLETE artifact, not just the modified section
+
+Follow these rules and guidelines:
+<rules-guidelines>
+- You should respond with the ENTIRE updated artifact, with no additional text before or after.
+- Do not wrap it in any XML tags you see in this prompt.
+- You should use proper markdown syntax when appropriate, as the text you generate will be rendered in markdown. UNLESS YOU ARE WRITING CODE.
+- When you generate code, a markdown renderer is NOT used so if you respond with code in markdown syntax, or wrap the code in triple backticks it will break the UI for the user.
+- If generating code, it is imperative you never wrap it in triple backticks, or prefix/suffix it with plain text. Ensure you ONLY respond with the code.
+${DEFAULT_CODE_PROMPT_RULES}
+- VERY IMPORTANT: KEEP THE SAME FORMATTING AS THE ORIGINAL ARTIFACT, DO NOT CHANGE THE FORMATTING OF THE TEXT unless specifically requested.
+</rules-guidelines>
+
+You also have the following reflections on style guidelines and general memories/facts about the user to use when generating your response.
+<reflections>
+{reflections}
+</reflections>
+
+The user's request and the web search results are in the conversation history - use them to modify the artifact appropriately.`;
 
 

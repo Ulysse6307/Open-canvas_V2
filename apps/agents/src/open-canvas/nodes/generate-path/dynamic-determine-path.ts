@@ -17,6 +17,7 @@ import z from "zod";
 import { BaseMessage } from "@langchain/core/messages";
 import { traceable } from "langsmith/traceable";
 
+
 interface DynamicDeterminePathParams {
   state: typeof OpenCanvasGraphAnnotation.State;
   newMessages: BaseMessage[];
@@ -62,6 +63,8 @@ async function dynamicDeterminePathFunc({
   const artifactRoute = currentArtifactContent
     ? "rewriteArtifact"
     : "generateArtifact";
+  
+  
 
   const model = await getModelFromConfig(config, {
     temperature: 0,
@@ -88,6 +91,7 @@ async function dynamicDeterminePathFunc({
   );
 
   const contextDocumentMessages = await createContextDocumentMessages(config);
+  
   const result = await modelWithTool.invoke([
     ...contextDocumentMessages,
     ...(newMessages.length ? newMessages : []),

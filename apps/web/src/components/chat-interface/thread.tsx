@@ -143,7 +143,7 @@ export const Thread: FC<ThreadProps> = (props: ThreadProps) => {
         {!hasChatStarted && (
           <ThreadWelcome
             handleQuickStart={handleQuickStart}
-            handleFileImport={handleFileImport}
+            handleFileImport={handleFileImport || (() => {})}
             composer={
               <Composer
                 chatStarted={false}

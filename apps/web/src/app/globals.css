@@ -163,7 +163,7 @@ a {
 .custom-blocknote-theme {
   --bn-colors-editor-text: #000000;
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 17.75pt !important;
+  font-size: 16.75pt !important;
   line-height: normal !important;
   letter-spacing: normal !important;
   word-spacing: normal !important;
@@ -201,7 +201,7 @@ a {
 .custom-blocknote-theme figcaption {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
   color: #000000 !important;
-  font-size: 17.75pt !important;
+  font-size: 16.75pt !important;
   line-height: normal !important;
   letter-spacing: normal !important;
   word-spacing: normal !important;
@@ -213,7 +213,7 @@ a {
 /* Titres principaux */
 .custom-blocknote-theme h1 {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 18.2pt;
+  font-size: 17.2pt;
   font-weight: bold;
   color: #000000;
   margin-bottom: 14pt;
@@ -230,7 +230,7 @@ a {
 .custom-blocknote-theme h6 {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
   color: #000000;
-  font-size: 14.3pt;
+  font-size: 13.3pt;
   font-weight: bold;
   line-height: normal;
   letter-spacing: normal;
@@ -248,7 +248,7 @@ a {
   margin-top: 0pt !important;
   font-family: "Cambria", "Times New Roman", Times, serif !important;
   color: #000000;
-  font-size: 17.75pt;
+  font-size: 16.75pt;
   line-height: 1 !important;
 }
 
@@ -256,7 +256,7 @@ a {
   text-align: left;
   font-family: "Cambria", "Times New Roman", Times, serif !important;
   color: #000000;
-  font-size: 17.75pt;
+  font-size: 16.75pt;
   margin: 0pt !important;
   padding: 0pt !important;
   line-height: 1.2 !important;
@@ -273,7 +273,7 @@ div[data-content-type="bulletListItem"] {
   margin-top: -4pt !important;
   line-height: 1 !important;
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 17.75pt !important;
+  font-size: 16.75pt !important;
   color: #000000 !important;
 }
 
@@ -334,7 +334,7 @@ div[data-content-type="bulletListItem"] [contenteditable] {
   color: #0000EE !important;
   text-decoration: underline;
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 17.75pt;
+  font-size: 16.75pt;
 }
 .custom-blocknote-theme a:hover {
   color: #551A8B !important;
@@ -382,7 +382,7 @@ div[data-content-type="bulletListItem"] [contenteditable] {
   font-style: italic;
   font-family: "Cambria", "Times New Roman", Times, serif !important;
   color: #000000;
-  font-size: 17.75pt;
+  font-size: 16.75pt;
 }
 
 /* Code et préformatage */
@@ -395,7 +395,7 @@ div[data-content-type="bulletListItem"] [contenteditable] {
   white-space: pre;
   text-align: justify;
   color: #000000;
-  font-size: 17.75pt;
+  font-size: 16.75pt;
 }
 
 /* Images et médias */
@@ -409,7 +409,7 @@ div[data-content-type="bulletListItem"] [contenteditable] {
 }
 .custom-blocknote-theme figcaption {
   font-family: "Cambria", "Times New Roman", Times, serif !important;
-  font-size: 17.75pt;
+  font-size: 16.75pt;
   color: #666666;
 }
 

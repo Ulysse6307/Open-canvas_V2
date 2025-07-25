@@ -122,8 +122,7 @@ export interface TextRendererProps {
 
 export function TextRendererComponent(props: TextRendererProps) {
   const editor = useCreateBlockNote({
-    // Enable keyboard shortcuts for bold/italic functionality
-    includeKeyboardShortcuts: true,
+    // Default configuration without includeKeyboardShortcuts
   });
   const { graphData } = useGraphContext();
   const {
@@ -307,7 +306,7 @@ export function TextRendererComponent(props: TextRendererProps) {
             {
               index: 1,
               fullMarkdown: fullMarkdown,
-              title: currentArtifactContent?.title || "Untitled",
+              title: artifact?.contents?.find(c => c.index === artifact.currentIndex)?.title || "Untitled",
               type: "text",
             },
           ],
@@ -340,7 +339,7 @@ export function TextRendererComponent(props: TextRendererProps) {
             {
               index: 1,
               fullMarkdown: newRawMarkdown,
-              title: currentArtifactContent?.title || "Untitled",
+              title: artifact?.contents?.find(c => c.index === artifact.currentIndex)?.title || "Untitled",
               type: "text",
             },
           ],

@@ -1,6 +1,7 @@
+
 import { saveAs } from "file-saver";
 import { marked } from "marked";
-import { Document, Paragraph, TextRun, SectionType, Packer, HeadingLevel } from "docx";
+import { Document, Paragraph, TextRun, SectionType, Packer, HeadingLevel, AlignmentType } from "docx";
 import { ArtifactCodeV3, ArtifactMarkdownV3 } from "@opencanvas/shared/types";
 
 /**
@@ -23,7 +24,7 @@ function parseMarkdownInlinesToTextRuns(text: string, defaultColor: string = "#0
       runs.push(new TextRun({ text: text.substring(currentIndex, match.index), color: defaultColor, font: defaultFont, bold : bold2 }));
     }
     // Add styled run
-    const [full, bold, boldContent, italic, italicContent, code, codeContent, linkBlock] = match;
+    const [_full, _bold, boldContent, _italic, italicContent, _code, codeContent, linkBlock] = match;
     if (boldContent) {
       runs.push(new TextRun({ text: boldContent, bold: true, color: defaultColor, font: defaultFont }));
     } else if (italicContent) {
@@ -33,7 +34,7 @@ function parseMarkdownInlinesToTextRuns(text: string, defaultColor: string = "#0
     } else if (linkBlock) {
       // Handle links as text (Word does not support interactive links, but you could extract the label)
       const label = linkBlock.match(/\[([^\]]+)\]/)?.[1] || "";
-      runs.push(new TextRun({ text: label, color: defaultColor, underline: true, font: defaultFont }));
+      runs.push(new TextRun({ text: label, color: defaultColor, underline: { type: "single" }, font: defaultFont }));
     }
     currentIndex = re.lastIndex;
   }
@@ -44,7 +45,7 @@ function parseMarkdownInlinesToTextRuns(text: string, defaultColor: string = "#0
   return runs;
 }
 
-function getHeadingLevelMap(): Record<number, HeadingLevel> {
+function getHeadingLevelMap(): Record<number, typeof HeadingLevel[keyof typeof HeadingLevel]> {
   return {
     1: HeadingLevel.HEADING_1,
     2: HeadingLevel.HEADING_2,
@@ -117,12 +118,33 @@ export async function exportMarkdownToDocx(
           break;
         case "list":
           if (token.items) {
-            token.items.forEach((item) => {
+            token.items.forEach((item: any, index: number) => {
+              // Determine list level for nested lists (if item has nested content)
+              const level = item.depth ? Math.min(item.depth - 1, 8) : 0;
+              
+              // Calculate indentation based on level
+              // 0.07cm = 40 twips (retrait de la puce), 0.71cm = 403 twips (retrait du texte)
+              const baseIndent = 40; // 0.07 cm
+              const textIndent = 403; // 0.71 cm  
+              const leftIndent = baseIndent + (level * textIndent); // Increment by text indent for each level
+              const hangingIndent = textIndent - baseIndent; // 403 - 40 = 363 twips
+              
               children.push(new Paragraph({
                 children: [
-                  new TextRun({ text: "• ", color: "#000000", font: "Cambria" }), // List bullet, adapt if you want nested lists
                   ...parseMarkdownInlinesToTextRuns(item.text, "#000000", "Cambria"),
                 ],
+                numbering: {
+                  reference: token.ordered ? "numbered-list" : "bullet-list",
+                  level: level,
+                },
+                indent: { 
+                  left: leftIndent, 
+                  hanging: hangingIndent 
+                },
+                spacing: {
+                  before: 100,
+                  after: 100,
+                },
               }));
             });
           }
@@ -140,10 +162,90 @@ export async function exportMarkdownToDocx(
       }
     }
 
-    // Final document structure
+    // Final document structure with numbering definitions
     const doc = new Document({
       title,
       description: "Document generated from OpenCanvas",
+      numbering: {
+        config: [
+          {
+            reference: "bullet-list",
+            levels: [
+              {
+                level: 0,
+                format: "bullet",
+                text: "●",
+                alignment: AlignmentType.LEFT,
+                style: {
+                  paragraph: {
+                    indent: { left: 403, hanging: 363 }, // 0.71cm left, 0.64cm hanging
+                  },
+                },
+              },
+              {
+                level: 1,
+                format: "bullet",
+                text: "○",
+                alignment: AlignmentType.LEFT,
+                style: {
+                  paragraph: {
+                    indent: { left: 806, hanging: 363 }, // Level 1: 403 * 2
+                  },
+                },
+              },
+              {
+                level: 2,
+                format: "bullet",
+                text: "■",
+                alignment: AlignmentType.LEFT,
+                style: {
+                  paragraph: {
+                    indent: { left: 1209, hanging: 363 }, // Level 2: 403 * 3
+                  },
+                },
+              },
+            ],
+          },
+          {
+            reference: "numbered-list",
+            levels: [
+              {
+                level: 0,
+                format: "decimal",
+                text: "%1.",
+                alignment: AlignmentType.LEFT,
+                style: {
+                  paragraph: {
+                    indent: { left: 403, hanging: 363 }, // 0.71cm left, 0.64cm hanging
+                  },
+                },
+              },
+              {
+                level: 1,
+                format: "lowerLetter",
+                text: "%2.",
+                alignment: AlignmentType.LEFT,
+                style: {
+                  paragraph: {
+                    indent: { left: 806, hanging: 363 }, // Level 1: 403 * 2
+                  },
+                },
+              },
+              {
+                level: 2,
+                format: "lowerRoman",
+                text: "%3.",
+                alignment: AlignmentType.LEFT,
+                style: {
+                  paragraph: {
+                    indent: { left: 1209, hanging: 363 }, // Level 2: 403 * 3
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
       sections: [{ properties: { type: SectionType.CONTINUOUS }, children }],
     });
 

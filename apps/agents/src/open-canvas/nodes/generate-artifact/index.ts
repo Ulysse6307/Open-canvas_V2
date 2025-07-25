@@ -64,15 +64,26 @@ export const generateArtifact = async (
 
   let response;
 
+  console.log("State webSearchGENERATEArtifact:", state.webSearchRewriteArtifact);
+
   if (state.webSearchRewriteArtifact) {
+    // For generate-artifact, we don't have existing artifact content, so we use empty string
+    const formattedWebSearchPrompt = REWRITE_OR_GENERATE_ARTIFACT_FROM_WEB_PROMPT
+      .replace("{reflections}", memoriesAsString)
+      .replace("{artifactContent}", "No existing artifact - generating new artifact");
+    const fullWebSearchSystemPrompt = userSystemPrompt
+      ? `${userSystemPrompt}\n${formattedWebSearchPrompt}`
+      : formattedWebSearchPrompt;
+    
     response = await modelWithArtifactTool.invoke(
     [
-      { role: isO1MiniModel ? "user" : "system", content: REWRITE_OR_GENERATE_ARTIFACT_FROM_WEB_PROMPT },
+      { role: isO1MiniModel ? "user" : "system", content: fullWebSearchSystemPrompt },
       ...contextDocumentMessages,
       ...state._messages,
     ],
     { runName: "generate_artifact" }
   );
+  console.log("CE QU'IL RECOIT:", fullWebSearchSystemPrompt, "MAIS AUSSI CONTEXT:", contextDocumentMessages, "ET MESSAGES:", state._messages);
 
   }
   else{
@@ -85,6 +96,8 @@ export const generateArtifact = async (
     { runName: "generate_artifact" }
   );
   }
+  console.log("GENERATE Artifact Response:", response);
+
 
   state.webSearchRewriteArtifact = false; // Reset the web search rewrite artifact flag
 

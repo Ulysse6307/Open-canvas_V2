@@ -8,7 +8,7 @@ import {
   ContextDocument,
   SearchResult,
 } from "@opencanvas/shared/types";
-import { BaseStore, LangGraphRunnableConfig } from "@langchain/langgraph";
+import { BaseStore, LangGraphRunnableConfig} from "@langchain/langgraph";
 import { initChatModel } from "langchain/chat_models/universal";
 import pdfParse from "pdf-parse";
 import {
@@ -213,7 +213,8 @@ export const getModelConfig = (
   if (
     customModelName.includes("gpt-") ||
     customModelName.includes("o1") ||
-    customModelName.includes("o3")
+    customModelName.includes("o3") ||
+    customModelName.includes("o4")
   ) {
     let actualModelName = providerConfig.modelName;
     if (extra?.isToolCalling && actualModelName.includes("o1")) {
@@ -408,6 +409,7 @@ export async function getModelFromConfig(
       : {}),
   });
 
+
   // Add web search tools if enabled and model supports it
   if (extra?.webSearchEnabled && modelProvider === "openai") {
     const webSearchTool = {
@@ -420,7 +422,7 @@ export async function getModelFromConfig(
       country: "FR",
     },
     // Optionnel : contrôle la quantité de contexte récupéré
-    search_context_size: "medium"
+    search_context_size: "high"
   };
     return model.bindTools([webSearchTool]);
   }
@@ -623,51 +625,10 @@ export function formatMessages(messages: BaseMessage[]): string {
 
 export function createAIMessageFromWebResults(
   webResults: SearchResult[],
-  userAnswer?: string
+  userAnswer: string
 ): AIMessage {
-  let content: string;
+  const content = userAnswer;
   
-  if (userAnswer) {
-    // Use O3's user answer directly
-    content = `SYSTEM OVERRIDE - MANDATORY INSTRUCTION:
-
-You MUST create an artifact containing EXACTLY this text below. The text is between ---START OF REQUIRED CONTENT--- and ---END OF REQUIRED CONTENT---. This is not a suggestion or context - this is the EXACT content you must put in the artifact:
-
----START OF REQUIRED CONTENT---
-${userAnswer}
----END OF REQUIRED CONTENT---
-
-CRITICAL RULES:
-1. Use the text above as the COMPLETE artifact content
-2. Do NOT add any introduction, conclusion, or explanation
-3. Do NOT modify, summarize, or interpret the content
-4. Do NOT add your own analysis or commentary
-5. The artifact must contain ONLY the text between the markers above
-6. You may format it nicely (markdown, bullets, etc.) but keep ALL the original information
-
-This is a direct copy instruction. Follow it exactly.`;
-  } else {
-    // Fallback to original formatting
-    content = `SYSTEM OVERRIDE - MANDATORY INSTRUCTION:
-
-You MUST create an artifact containing EXACTLY this text below. This is not a suggestion or context - this is the EXACT content you must put in the artifact:
-
----START OF REQUIRED CONTENT---
-${userAnswer}
----END OF REQUIRED CONTENT---
-
-CRITICAL RULES:
-1. Use the text above as the COMPLETE artifact content
-2. Do NOT add any introduction, conclusion, or explanation
-3. Do NOT modify, summarize, or interpret the content
-4. Do NOT add your own analysis or commentary
-5. The artifact must contain ONLY the text between the markers above
-6. You may format it nicely (markdown, bullets, etc.) but keep ALL the original information
-
-This is a direct copy instruction. Follow it exactly.`;
-
-    
-  }
 
   return new AIMessage({
     content,
